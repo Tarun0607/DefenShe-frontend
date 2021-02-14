@@ -2,6 +2,19 @@ import React,{Component} from 'react';
 import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
 import MapView from 'react-native-maps';
 const overlay = true;
+const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
+                {latitude: 12.947214, longitude: 80.138181, weight: 1},
+                {latitude: 12.947274, longitude: 80.138281, weight: 1},
+                {latitude: 12.946214, longitude: 80.138181, weight: 1},
+                {latitude: 12.947914, longitude: 80.137181, weight: 1},
+                {latitude: 12.946814, longitude: 80.139781, weight: 1},
+                {latitude: 12.945214, longitude: 80.134781, weight: 1},
+                {latitude: 12.945114, longitude: 80.134981, weight: 1},
+                {latitude: 12.944214, longitude: 80.134781, weight: 1},
+                {latitude: 12.945214, longitude: 80.135781, weight: 1},
+                {latitude: 12.946214, longitude: 80.134681, weight: 1},
+                {latitude: 12.945714, longitude: 80.138281, weight: 1},
+	];
 export default class Map extends Component{
   render(){
     return(
@@ -11,8 +24,8 @@ export default class Map extends Component{
           region={{
             latitude: this.props.location.latitude,
             longitude: this.props.location.longitude,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001,
+            latitudeDelta: 0.006,
+            longitudeDelta: 0.006,
           }}>
           <MapView.Marker
               key={1}
@@ -20,6 +33,11 @@ export default class Map extends Component{
               title={"Your Location"}
               description={""}
           />
+          <MapView.Heatmap points={points}
+                         opacity={0.2}
+                         radius={50}
+                         maxIntensity={10}
+                         gradientSmoothing={5}/>
           <View style={styles.overlay}>
           </View>
         </MapView>
