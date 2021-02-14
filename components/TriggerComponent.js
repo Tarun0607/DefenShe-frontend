@@ -3,14 +3,34 @@ import { Alert, Modal, TouchableHighlight, StyleSheet, Text, View, TouchableNati
 
 export default class Trigger extends Component{
   state={
-    display: 'Alert',
+    display: 'ALERT',
     modalVisible: false,
-    modalTimer: 4,
+    modalTimer: 6,
+  }
+  confirmAlert = ()=>{
+    this.setState({
+      display: 'Alert Created'
+    })
+  }
+  updateTimer = ()=>{
+    this.setState({
+      modalTimer: this.state.modalTimer-1,
+    },()=>{
+      if(this.state.modalTimer!==0 && this.state.modalVisible){
+        setTimeout(()=>{
+          this.updateTimer();
+        },1000)
+      }else{
+        this.setState({modalVisible: false, modalTimer: 6})
+      }
+    })
   }
   async createAlert(){
     console.log("touch")
     this.setState({modalVisible: true})
+    this.updateTimer()
   }
+
   render(){
     return(
       <View style={{flex:1, width:'100%'}}>
@@ -21,13 +41,23 @@ export default class Trigger extends Component{
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>Do you want to create an emergency Call?</Text>
+              <View style={styles.modalButtons}>
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
                 onPress={() => {
-                  this.setState({modalVisible: !this.state.modalVisible});
+                  this.confirmAlert();
+                  this.setState({modalVisible: !this.state.modalVisible, modalTimer: 6});
                 }}>
-                <Text style={styles.textStyle}>Hide Modal</Text>
+                <Text style={styles.textStyle}>Yes ({this.state.modalTimer})</Text>
               </TouchableHighlight>
+              <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                onPress={() => {
+                  this.setState({modalVisible: !this.state.modalVisible, modalTimer: 6});
+                }}>
+                <Text style={styles.textStyle}>No</Text>
+              </TouchableHighlight>
+              </View>
               
             </View>
           </View>
@@ -38,7 +68,6 @@ export default class Trigger extends Component{
           <View style={styles.trigger}>
               <Text style={styles.text}>{this.state.display}</Text>
           </View>
-          
         </TouchableNativeFeedback>
       </View>
       
@@ -73,10 +102,10 @@ const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
         marginTop: 22,
     },
     modalView: {
+        flex:0.2,
         margin: 20,
         backgroundColor: 'white',
         borderRadius: 10,
@@ -91,10 +120,18 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    modalButtons: {
+      flex:1,
+      margin: 20,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     openButton: {
-        flexDirection: "row",
         backgroundColor: '#F194FF',
         borderRadius: 20,
+        width: '40%',
+        margin: '5%',
         padding: 10,
         elevation: 2,
     },
@@ -106,5 +143,8 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
+        fontWeight: '700',
+        fontSize: 20,
+
     },
 });

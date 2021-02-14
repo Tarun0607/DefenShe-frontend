@@ -10,9 +10,9 @@ export default class Header extends Component{
         fontsLoaded: false,
     }
     async loadFonts() {
-        // await Font.loadAsync({
-        //     LobsterTwo: require('../assets/fonts/Titillium-LightItalic.otf'),
-        // });
+        await Font.loadAsync({
+            'Pacifico': require('../assets/fonts/Pacifico.ttf'),
+        });
         this.setState({ fontsLoaded: true });
     }
     componentDidMount() {
@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
         flex:1,
         width:windowWidth,
         backgroundColor: '#2F96F3',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     text: {
-        marginLeft: 10,
-        width: '100%',
-        fontWeight: 'bold',
         fontSize: 25,
+        fontFamily: 'Pacifico',
+        alignItems: 'center'
     }
 });
