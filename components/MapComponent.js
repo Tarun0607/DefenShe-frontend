@@ -16,17 +16,27 @@ const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
                 {latitude: 12.945714, longitude: 80.138281, weight: 1},
 	];
 export default class Map extends Component{
+  state = {
+    region: {
+      latitude: this.props.location.latitude,
+      longitude: this.props.location.longitude,
+      latitudeDelta: 0.006,
+      longitudeDelta: 0.006,
+    },
+  }
+  componentDidMount(){
+  }
   render(){
     return(
       <View style={styles.mapRoot}>
         <MapView
           style={styles.map}
-          region={{
-            latitude: this.props.location.latitude,
-            longitude: this.props.location.longitude,
-            latitudeDelta: 0.006,
-            longitudeDelta: 0.006,
-          }}>
+          showsUserLocation={true}
+          followsUserLocation={false}
+          userLocationUpdateInterval={2000}
+          initialRegion={this.state.region}
+          onRegionChange = {async (region,gesture) => {if(gesture===true)this.setState({region:region})}}
+          >
           <MapView.Marker
               key={1}
               coordinate={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
