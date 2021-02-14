@@ -2,15 +2,32 @@ import React,{Component} from 'react';
 import { Alert, Modal, TouchableHighlight, StyleSheet, Text, View, TouchableNativeFeedback, Dimensions } from 'react-native';
 
 export default class Trigger extends Component{
+
   state={
+    alertTriggered: false,
     display: 'ALERT',
     modalVisible: false,
     modalTimer: 6,
+    alertColor: 'red',
   }
   confirmAlert = ()=>{
     this.setState({
-      display: 'Alert Created'
+      display: 'Alert Created',
+      alertColor: 'blue',
+      alertTriggered: true,
+    },()=>{
+      setTimeout(()=>{
+        this.setState({
+          alertColor: 'red',
+        },()=>{
+          setTimeout(()=>{
+            if(this.state.alertTriggered===true)
+            this.confirmAlert();
+          },300)
+        })
+      },300)
     })
+    
   }
   updateTimer = ()=>{
     this.setState({
@@ -20,6 +37,9 @@ export default class Trigger extends Component{
         setTimeout(()=>{
           this.updateTimer();
         },1000)
+      }else if(this.state.modalVisible===true){
+        this.setState({modalVisible: false, modalTimer: 6})
+        this.confirmAlert();
       }else{
         this.setState({modalVisible: false, modalTimer: 6})
       }
@@ -27,13 +47,55 @@ export default class Trigger extends Component{
   }
   async createAlert(){
     console.log("touch")
-    this.setState({modalVisible: true})
-    this.updateTimer()
+    this.setState({modalVisible: true},
+      ()=>{
+        this.updateTimer();
+      })
   }
 
   render(){
+    const alertFlex = this.state.alertTriggered===true?0.65:1;
+    const cancelFlex = this.state.alertTriggered===true?0.35:1;
+    const alertTrigger= {
+      backgroundColor: this.state.alertColor,
+      flex: alertFlex,
+      margin: '5%',
+      width:'90%',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      elevation: 6,
+      overflow: 'hidden',
+    };
+    const cancelTrigger= {
+      backgroundColor: 'lightgrey',
+      flex: cancelFlex,
+      margin: '5%',
+      width:'90%',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      elevation: 6,
+      overflow: 'hidden',
+    };
+    const cancelAlert = ()=>{
+      if(this.state.alertTriggered===true)
+      return(
+        <TouchableNativeFeedback
+        display={false} 
+        style={styles.rootalert} 
+        onPress={()=>{this.setState({alertTriggered: false, display: 'ALERT'})}}>
+          <View style={cancelTrigger}>
+              <Text style={styles.text}>Cancel</Text>
+          </View>
+        </TouchableNativeFeedback>
+      )
+      else
+      return null
+    }
+    var something = cancelAlert()
     return(
-      <View style={{flex:1, width:'100%'}}>
+      <View style={{flex:0.7,flexDirection:'row', width:'100%'}}>
         <Modal
         animationType="fade"
         transparent={true}
@@ -62,15 +124,16 @@ export default class Trigger extends Component{
             </View>
           </View>
         </Modal>
-        <TouchableNativeFeedback 
+        <TouchableNativeFeedback
+        display={false} 
         style={styles.rootalert} 
-        onPress={()=>{this.createAlert()}}>
-          <View style={styles.trigger}>
+        onPress={()=>{if(this.state.alertTriggered===false) this.createAlert()}}>
+          <View style={alertTrigger}>
               <Text style={styles.text}>{this.state.display}</Text>
           </View>
         </TouchableNativeFeedback>
+        {something}
       </View>
-      
     )
   }
 
@@ -78,19 +141,7 @@ export default class Trigger extends Component{
 
 const styles = StyleSheet.create({
     rootalert:{
-      backgroundColor: '#221633',
-      elevation: 3,
-    },
-    trigger: {
-        flex:0.6,
-        margin: '5%',
-        width:'90%',
-        backgroundColor: 'red',
-        alignItems: 'center',
-        justifyContent: 'center',
         borderRadius: 10,
-        elevation: 6,
-        overflow: 'hidden',
     },
     text: {
         textAlign: 'center',

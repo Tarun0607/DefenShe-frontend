@@ -32,8 +32,8 @@ export default class Map extends Component{
         <MapView
           style={styles.map}
           showsUserLocation={true}
-          followsUserLocation={false}
-          userLocationUpdateInterval={2000}
+          followsUserLocation={true}
+          userLocationUpdateInterval={3000}
           initialRegion={this.state.region}
           onRegionChange = {async (region,gesture) => {if(gesture===true)this.setState({region:region})}}
           >

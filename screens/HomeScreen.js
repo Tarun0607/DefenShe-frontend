@@ -54,12 +54,14 @@ export default class HomeScreen extends Component{
     deviceID: '',
     latitude: 0.0,
     longitude: 0.0,
+    locationFetched: false
   };
   updateLocationInterval = async ()=>{
     const location = await Location.getCurrentPositionAsync({});
     this.setState({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
+      locationFetched: true
     },()=>{
       setTimeout(()=>{
         sendLocation(this.state.deviceID,this.state.latitude,this.state.longitude)
@@ -78,6 +80,7 @@ export default class HomeScreen extends Component{
     });
   }
   render(){
+    if(this.state.locationFetched===true)
     return(
       <View style={styles.container}>
         <View style={styles.triggerview}>
@@ -88,6 +91,8 @@ export default class HomeScreen extends Component{
         </View>
       </View>
     )
+    else
+    return null;
   }
 
 }
