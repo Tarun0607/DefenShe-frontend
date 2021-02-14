@@ -11,8 +11,8 @@ export default class Map extends Component{
           region={{
             latitude: this.props.location.latitude,
             longitude: this.props.location.longitude,
-            latitudeDelta: 0.0002,
-            longitudeDelta: 0.0001
+            latitudeDelta: 0.001,
+            longitudeDelta: 0.001
           }}>
           <MapView.Marker
               key={1}
