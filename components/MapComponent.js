@@ -17,7 +17,7 @@ const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
                 {latitude: 12.946214, longitude: 80.134681, weight: 1},
                 {latitude: 12.945714, longitude: 80.138281, weight: 1},
 	];
-const API_KEY = "AIzaSyB6pOeU_MpjIcKlQz2jD-epOm7nO1cxXzk";
+const API_KEY = "KEY";
 export default class Map extends Component{
   state = {
     region: {
