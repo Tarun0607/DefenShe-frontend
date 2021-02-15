@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
 import MapView from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
+import axios from 'axios';
 const overlay = true;
 const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
                 {latitude: 12.947214, longitude: 80.138181, weight: 1},
@@ -16,7 +17,7 @@ const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
                 {latitude: 12.946214, longitude: 80.134681, weight: 1},
                 {latitude: 12.945714, longitude: 80.138281, weight: 1},
 	];
-const API_KEY = "MAPS_API_KEY";
+const API_KEY = "AIzaSyB6pOeU_MpjIcKlQz2jD-epOm7nO1cxXzk";
 export default class Map extends Component{
   state = {
     region: {
@@ -25,8 +26,38 @@ export default class Map extends Component{
       latitudeDelta: 0.006,
       longitudeDelta: 0.006,
     },
+    renderVictim: false,
+    victimLatitude: null,
+    victimLongitude: null,
+  }
+  fetchVictimLocation = async (deviceID)=>{
+    var requestOptions = {
+      method: 'GET',
+      url: "https://defenshe.azurewebsites.net/trigger/",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({deviceID:deviceID}),
+    };
+    axios(requestOptions)
+    .then((response)=>{
+      console.log(response.data)
+      this.setState({
+        renderVictim: response.data.render,
+        victimLatitude: response.data.latitude,
+        victimLongitude: response.data.longitude,
+      },()=>{
+        setTimeout(()=>{
+          this.fetchVictimLocation(deviceID);
+        },2000);
+      })
+    })
+    .catch((error)=>{
+      this.fetchVictimLocation(deviceID);
+    });
   }
   componentDidMount(){
+    this.fetchVictimLocation(this.props.deviceID);
   }
   render(){
     const renderDirection = ()=>{
