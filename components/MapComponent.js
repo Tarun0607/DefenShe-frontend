@@ -30,48 +30,52 @@ export default class Map extends Component{
     victimLatitude: null,
     victimLongitude: null,
   }
-  fetchVictimLocation = async (deviceID)=>{
+  fetchVictimLocation = async ()=>{
     var requestOptions = {
-      method: 'GET',
-      url: "https://defenshe.azurewebsites.net/trigger/",
+      method: 'get',
+      url: "https://defenshe.azurewebsites.net/trigger/"+this.props.deviceID,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({deviceID:deviceID}),
     };
     axios(requestOptions)
     .then((response)=>{
-      console.log(response.data)
       this.setState({
         renderVictim: response.data.render,
-        victimLatitude: response.data.latitude,
-        victimLongitude: response.data.longitude,
       },()=>{
-        setTimeout(()=>{
-          this.fetchVictimLocation(deviceID);
-        },2000);
+        if(response.data.render===true){
+          this.setState({ 
+            victimLatitude: response.data.latitude["$numberDecimal"],
+            victimLongitude: response.data.longitude["$numberDecimal"],
+          })
+        }
       })
     })
     .catch((error)=>{
-      this.fetchVictimLocation(deviceID);
     });
   }
   componentDidMount(){
-    this.fetchVictimLocation(this.props.deviceID);
+    setInterval(async () => await this.fetchVictimLocation(), 3000);
   }
+  componentWillUnmount() {
+  } 
   render(){
+    const victimLatitude = this.state.victimLatitude;
+    const victimLongitude = this.state.victimLongitude;
     const renderDirection = ()=>{
       try{
-        var directionComponent=(
+        if(this.state.renderVictim===true)
+        return(
           <MapViewDirections
           origin={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
-          destination={{latitude: 12.943775, longitude: 80.139447,}}
+          destination={{latitude: victimLatitude, longitude: victimLongitude,}}
           strokeWidth={6}
           strokeColor="hotpink"
           apikey={API_KEY}
         />
         )
-        return directionComponent;
+        else
+        return null;
       }catch{
         return null;
       }

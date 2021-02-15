@@ -84,7 +84,7 @@ export default class HomeScreen extends Component{
     return(
       <View style={styles.container}>
         <View style={styles.triggerview}>
-          <TriggerComponent />
+          <TriggerComponent deviceID={this.state.deviceID} location={{latitude: this.state.latitude, longitude: this.state.longitude}}/>
         </View>
         <View style={styles.mapview}>
           <MapComponent deviceID={this.state.deviceID} location={{latitude: this.state.latitude, longitude: this.state.longitude}} />

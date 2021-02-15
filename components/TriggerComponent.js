@@ -1,14 +1,24 @@
 import React,{Component} from 'react';
 import { Alert, Modal, TouchableHighlight, StyleSheet, Text, View, TouchableNativeFeedback, Dimensions } from 'react-native';
-
+import axios from 'axios';
 export default class Trigger extends Component{
-
   state={
     alertTriggered: false,
     display: 'ALERT',
     modalVisible: false,
     modalTimer: 6,
     alertColor: 'red',
+  }
+  triggerManager = async (reqType)=>{
+    var requestOptions = {
+      method: reqType,
+      url: "https://defenshe.azurewebsites.net/trigger/",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({deviceID:this.props.deviceID, latitude:this.props.location.latitude, longitude: this.props.location.longitude}),
+    };
+    axios(requestOptions);
   }
   confirmAlert = ()=>{
     this.setState({
@@ -39,6 +49,7 @@ export default class Trigger extends Component{
         },1000)
       }else if(this.state.modalVisible===true){
         this.setState({modalVisible: false, modalTimer: 6})
+        this.triggerManager('post');
         this.confirmAlert();
       }else{
         this.setState({modalVisible: false, modalTimer: 6})
@@ -84,7 +95,7 @@ export default class Trigger extends Component{
         <TouchableNativeFeedback
         display={false} 
         style={styles.rootalert} 
-        onPress={()=>{this.setState({alertTriggered: false, display: 'ALERT'})}}>
+        onPress={()=>{this.triggerManager('delete'); this.setState({alertTriggered: false, display: 'ALERT'})}}>
           <View style={cancelTrigger}>
               <Text style={styles.text}>Cancel</Text>
           </View>
@@ -107,6 +118,7 @@ export default class Trigger extends Component{
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
                 onPress={() => {
+                  this.triggerManager('post');
                   this.confirmAlert();
                   this.setState({modalVisible: !this.state.modalVisible, modalTimer: 6});
                 }}>
