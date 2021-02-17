@@ -12,23 +12,39 @@ var locationPermission = false;
 export default class App extends Component{
   state = {
     isLoaded: false,
+    locationPermission: false
   }
-  async componentDidMount(){
-    setTimeout( () => {
-      this.setState({ isLoaded: true })
-    },2000);
+  componentDidMount = async ()=>{
     Location.requestPermissionsAsync()
       .then(({status})=>{
         locationPermission = (status === 'granted');
+          this.setState({ locationPermission: locationPermission })
         while(locationPermission===false){
           Location.requestPermissionsAsync()
           .then(({status})=>{
             locationPermission = (status === 'granted');
+            this.setState({ locationPermission: locationPermission })
           })
         }
     })
+    setTimeout( () => {
+      this.setState({ isLoaded: true })
+    },2000);
+    
   }
   render(){
+    renderHomeScreen = ()=>{
+      if(this.state.locationPermission===true){
+        return(
+          <View style={styles.home}> 
+            <HomeScreen />
+          </View>
+        )
+      }else{
+        return null;
+      }
+    }
+    const HomeScreenRender = renderHomeScreen();
     return(
       <AnimatedSplash
         translucent={true}
@@ -43,10 +59,7 @@ export default class App extends Component{
       <View style={styles.header}> 
         <HeaderComponent />
       </View>
-      <View style={styles.home}> 
-        <HomeScreen />
-      </View>
-      
+      {HomeScreenRender}
     </View>
     </AnimatedSplash>
     )

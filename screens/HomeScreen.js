@@ -80,19 +80,23 @@ export default class HomeScreen extends Component{
     });
   }
   render(){
-    if(this.state.locationFetched===true)
-    return(
-      <View style={styles.container}>
-        <View style={styles.triggerview}>
-          <TriggerComponent deviceID={this.state.deviceID} location={{latitude: this.state.latitude, longitude: this.state.longitude}}/>
+    renderHomeScreen = ()=>{
+      if(this.state.locationFetched===true)
+      return(
+        <View style={styles.container}>
+          <View style={styles.triggerview}>
+            <TriggerComponent deviceID={this.state.deviceID} location={{latitude: this.state.latitude, longitude: this.state.longitude}}/>
+          </View>
+          <View style={styles.mapview}>
+            <MapComponent deviceID={this.state.deviceID} location={{latitude: this.state.latitude, longitude: this.state.longitude}} />
+          </View>
         </View>
-        <View style={styles.mapview}>
-          <MapComponent deviceID={this.state.deviceID} location={{latitude: this.state.latitude, longitude: this.state.longitude}} />
-        </View>
-      </View>
-    )
-    else
-    return null;
+      )
+      else
+      return null;      
+    };
+    const HomeScreenRender = renderHomeScreen();
+    return HomeScreenRender;
   }
 
 }
