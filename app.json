@@ -20,6 +20,7 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyB6pOeU_MpjIcKlQz2jD-epOm7nO1cxXzk"
