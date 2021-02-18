@@ -4,28 +4,27 @@ import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import AnimatedSplash from "react-native-animated-splash-screen";
 import * as Location from 'expo-location';
 import HomeScreen from './screens/HomeScreen';
+import HomeScreenBackground from './screens/HomeScreenBackground';
 import HeaderComponent from './components/HeaderComponent';
-
+import * as Permissions from 'expo-permissions';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 var locationPermission = false;
 export default class App extends Component{
   state = {
     isLoaded: false,
-    locationPermission: false
+    locationPermission: false,
+    locationPermissionType: false,
   }
   componentDidMount = async ()=>{
-    Location.requestPermissionsAsync()
-      .then(({status})=>{
-        locationPermission = (status === 'granted');
-          this.setState({ locationPermission: locationPermission })
-        while(locationPermission===false){
-          Location.requestPermissionsAsync()
-          .then(({status})=>{
-            locationPermission = (status === 'granted');
-            this.setState({ locationPermission: locationPermission })
-          })
+    Permissions.askAsync(Permissions.LOCATION)
+    .then((status)=>{
+      locationPermission = (status.status === 'granted');
+      this.setState({ locationPermission: locationPermission },()=>{
+        if(this.state.locationPermission===true){
+          this.setState({locationPermissionType: (status.permissions.location.scope==="always")})
         }
+      })
     })
     setTimeout( () => {
       this.setState({ isLoaded: true })
@@ -34,14 +33,20 @@ export default class App extends Component{
   }
   render(){
     renderHomeScreen = ()=>{
-      if(this.state.locationPermission===true){
+      if(this.state.locationPermission===true && this.state.locationPermissionType===false){
         return(
           <View style={styles.home}> 
             <HomeScreen />
           </View>
         )
+      }else if(this.state.locationPermission===true && this.state.locationPermissionType===true){
+        return(
+          <View style={styles.home}> 
+            <HomeScreenBackground />
+          </View>
+        )
       }else{
-        return null;
+        return <View><Text style={{justifyContent: "center", textAlign: "center"}}>You need to enable location always to use this app</Text></View>;
       }
     }
     const HomeScreenRender = renderHomeScreen();

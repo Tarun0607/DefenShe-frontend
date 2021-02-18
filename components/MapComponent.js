@@ -29,8 +29,8 @@ export default class Map extends Component{
       longitudeDelta: 0.006,
     },
     renderVictim: false,
-    victimLatitude: null,
-    victimLongitude: null,
+    victimLatitude: 0.0,
+    victimLongitude: 0.0,
   }
   fetchVictimLocation = async ()=>{
     var requestOptions = {
@@ -44,9 +44,11 @@ export default class Map extends Component{
     .then((response)=>{
       if(response.data.render===true){
         this.setState({ 
-          victimLatitude: response.data.latitude["$numberDecimal"],
-          victimLongitude: response.data.longitude["$numberDecimal"],
+          victimLatitude: Number(response.data.latitude["$numberDecimal"]),
+          victimLongitude: Number(response.data.longitude["$numberDecimal"]),
           renderVictim: response.data.render,
+        },()=>{
+          return
         })
       }else{
         this.setState({
@@ -61,28 +63,6 @@ export default class Map extends Component{
     setInterval(async () => await this.fetchVictimLocation(), 3000);
   }
   render(){
-    const renderDirection = ()=>{
-      const source = {latitude: this.props.location.latitude, longitude: this.props.location.longitude}
-      const destn = {latitude: this.state.victimLatitude, longitude: this.state.victimLongitude};
-      try{
-        if(this.state.renderVictim===true){
-          return(
-            <MapViewDirections
-            origin={source}
-            destination={destn}
-            strokeWidth={6}
-            strokeColor="hotpink"
-            apikey={API_KEY}
-          />
-          )
-        }else{
-          return null;
-        } 
-      }catch{
-        return null;
-      }
-    }
-    const mapDirections = renderDirection();
     return(
       <View style={styles.mapRoot}>
         <MapView
@@ -112,7 +92,15 @@ export default class Map extends Component{
             strokeWidth={0.4}
             fillColor={"rgba(12,45,12,0.1)"} 
           />
-          {mapDirections}
+          {(this.state.renderVictim === true) && (
+  					<MapViewDirections
+            origin={{latitude: this.props.location.latitude, longitude: this.props.location.longitude,}}
+            destination={{latitude: this.state.victimLatitude, longitude: this.state.victimLongitude,}}
+            strokeWidth={4}
+            strokeColor="black"
+            apikey={API_KEY}
+          />
+  				)}
           <View style={styles.overlay}>
           </View>
         </MapView>
