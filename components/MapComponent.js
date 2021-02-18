@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
 import MapView from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import axios from 'axios';
+import {AppExports} from '../config/apiKey';
 const overlay = true;
 const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
                 {latitude: 12.947214, longitude: 80.138181, weight: 1},
@@ -17,7 +18,8 @@ const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
                 {latitude: 12.946214, longitude: 80.134681, weight: 1},
                 {latitude: 12.945714, longitude: 80.138281, weight: 1},
 	];
-const API_KEY = "KEY";
+const API_KEY = AppExports[0].googleServiceKey;
+
 export default class Map extends Component{
   state = {
     region: {
@@ -40,16 +42,17 @@ export default class Map extends Component{
     };
     axios(requestOptions)
     .then((response)=>{
-      this.setState({
-        renderVictim: response.data.render,
-      },()=>{
-        if(response.data.render===true){
-          this.setState({ 
-            victimLatitude: response.data.latitude["$numberDecimal"],
-            victimLongitude: response.data.longitude["$numberDecimal"],
-          })
-        }
-      })
+      if(response.data.render===true){
+        this.setState({ 
+          victimLatitude: response.data.latitude["$numberDecimal"],
+          victimLongitude: response.data.longitude["$numberDecimal"],
+          renderVictim: response.data.render,
+        })
+      }else{
+        this.setState({
+          renderVictim: response.data.render,
+        })
+      }
     })
     .catch((error)=>{
     });
@@ -57,25 +60,24 @@ export default class Map extends Component{
   componentDidMount(){
     setInterval(async () => await this.fetchVictimLocation(), 3000);
   }
-  componentWillUnmount() {
-  } 
   render(){
-    const victimLatitude = this.state.victimLatitude;
-    const victimLongitude = this.state.victimLongitude;
     const renderDirection = ()=>{
+      const source = {latitude: this.props.location.latitude, longitude: this.props.location.longitude}
+      const destn = {latitude: this.state.victimLatitude, longitude: this.state.victimLongitude};
       try{
-        if(this.state.renderVictim===true)
-        return(
-          <MapViewDirections
-          origin={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
-          destination={{latitude: victimLatitude, longitude: victimLongitude,}}
-          strokeWidth={6}
-          strokeColor="hotpink"
-          apikey={API_KEY}
-        />
-        )
-        else
-        return null;
+        if(this.state.renderVictim===true){
+          return(
+            <MapViewDirections
+            origin={source}
+            destination={destn}
+            strokeWidth={6}
+            strokeColor="hotpink"
+            apikey={API_KEY}
+          />
+          )
+        }else{
+          return null;
+        } 
       }catch{
         return null;
       }
@@ -92,23 +94,24 @@ export default class Map extends Component{
           onRegionChange = {async (region,gesture) => {if(gesture===true)this.setState({region:region})}}
           >
           <MapView.Marker
-              key={1}
-              coordinate={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
-              title={"Your Location"}
-              description={""}
+            key={1}
+            coordinate={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
+            title={"Your Location"}
+            description={""}
           />
-          <MapView.Heatmap points={points}
-                         opacity={0.2}
-                         radius={50}
-                         maxIntensity={10}
-                         gradientSmoothing={5}/>
-          {/* <MapView.Polyline
-          coordinates={points} /> */}
+          <MapView.Heatmap 
+            points={points}
+            opacity={0.2}
+            radius={50}
+            maxIntensity={10}
+            gradientSmoothing={5}
+          />
           <MapView.Circle
-          center={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
-          radius={310}
-          strokeWidth={0.4}
-          fillColor={"rgba(12,45,12,0.1)"} />
+            center={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
+            radius={310}
+            strokeWidth={0.4}
+            fillColor={"rgba(12,45,12,0.1)"} 
+          />
           {mapDirections}
           <View style={styles.overlay}>
           </View>
