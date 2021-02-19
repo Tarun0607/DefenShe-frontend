@@ -24,7 +24,7 @@ export default class App extends Component{
           this.setState({locationPermissionType: (status.permissions.location.scope==="always")},()=>{
             setTimeout( () => {
               this.setState({ isLoaded: true })
-            },2000);
+            },500);
           })
         }
       })
