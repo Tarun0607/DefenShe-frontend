@@ -71,12 +71,6 @@ export default class Map extends Component{
           initialRegion={this.state.region}
           onRegionChange = {async (region,gesture) => {if(gesture===true)this.setState({region:region})}}
           >
-          <MapView.Marker
-            key={1}
-            coordinate={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}
-            title={"Your Location"}
-            description={""}
-          />
           <MapView.Heatmap 
             points={points}
             opacity={0.2}
@@ -97,7 +91,15 @@ export default class Map extends Component{
             strokeWidth={4}
             strokeColor="black"
             apikey={API_KEY}
-          />
+            />
+  				)}
+          {(this.state.renderVictim === true) && (
+  					<MapView.Marker
+            key={1}
+            coordinate={{latitude: this.state.victimLatitude, longitude: this.state.victimLongitude,}}
+            title={"Victim's Location"}
+            description={""}
+            />
   				)}
           <View style={styles.overlay}>
           </View>

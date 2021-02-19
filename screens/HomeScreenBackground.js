@@ -10,6 +10,7 @@ import * as TaskManager from 'expo-task-manager';
 
 const LOCATION_UPDATES_TASK = 'location-updates';
 const locationEventsEmitter = new EventEmitter();
+
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
@@ -80,7 +81,11 @@ export default class HomeScreen extends Component{
       });
     })
   }
-  
+  componentWillUnmount() {
+    if (this.eventSubscription) {
+      this.eventSubscription.remove();
+    }
+  }
   async componentDidMount(){
     registerForPushNotificationsAsync()
     .then((token) => {
@@ -101,8 +106,7 @@ export default class HomeScreen extends Component{
     });
   }
   render(){
-    renderHomeScreen = ()=>{
-      if(this.state.locationFetched===true)
+      {if(this.state.locationFetched===true)
       return(
         <View style={styles.container}>
           <View style={styles.triggerview}>
@@ -114,12 +118,8 @@ export default class HomeScreen extends Component{
         </View>
       )
       else
-      return null;      
-    };
-    const HomeScreenRender = renderHomeScreen();
-    return HomeScreenRender;
-  }
-
+      return null}     
+  };
 }
 
 const styles = StyleSheet.create({

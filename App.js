@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import React,{Component} from 'react';
 import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import AnimatedSplash from "react-native-animated-splash-screen";
-import * as Location from 'expo-location';
 import HomeScreen from './screens/HomeScreen';
 import HomeScreenBackground from './screens/HomeScreenBackground';
 import HeaderComponent from './components/HeaderComponent';
@@ -29,8 +28,7 @@ export default class App extends Component{
           })
         }
       })
-    })
-    
+    }) 
   }
   render(){
     renderHomeScreen = ()=>{
