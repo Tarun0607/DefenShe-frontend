@@ -47,8 +47,6 @@ export default class Map extends Component{
           victimLatitude: Number(response.data.latitude["$numberDecimal"]),
           victimLongitude: Number(response.data.longitude["$numberDecimal"]),
           renderVictim: response.data.render,
-        },()=>{
-          return
         })
       }else{
         this.setState({

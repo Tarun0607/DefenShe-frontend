@@ -1,11 +1,15 @@
 import React,{Component} from 'react';
 import { StyleSheet, View } from 'react-native';
+import { EventEmitter } from 'fbemitter';
 import TriggerComponent from '../components/TriggerComponent.js';
 import MapComponent from '../components/MapComponent';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
 
+const LOCATION_UPDATES_TASK = 'location-updates';
+const locationEventsEmitter = new EventEmitter();
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
@@ -34,6 +38,17 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
+TaskManager.defineTask(LOCATION_UPDATES_TASK, async ({ data: { locations } }) => {
+  if (locations && locations.length > 0) {
+    const [location] = locations;
+    const updatedLocations = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude
+    }
+    locationEventsEmitter.emit('update', updatedLocations);
+  }
+});
+
 async function sendLocation(deviceId, latitude, longitude){
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -54,28 +69,34 @@ export default class HomeScreen extends Component{
     deviceID: '',
     latitude: 0.0,
     longitude: 0.0,
-    locationFetched: false
+    locationFetched: false,
   };
-  updateLocationInterval = async ()=>{
-    const location = await Location.getCurrentPositionAsync({});
-    this.setState({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-      locationFetched: true
-    },()=>{
-      setTimeout(()=>{
+
+  didUpdate = ()=>{
+    this.eventSubscription = locationEventsEmitter.addListener('update', locations => {
+      this.setState({ latitude: locations.latitude, longitude: locations.longitude },()=>{
+        this.setState({locationFetched: true})
         sendLocation(this.state.deviceID,this.state.latitude,this.state.longitude)
-        this.updateLocationInterval();
-      },3000);
+      });
     })
   }
+  
   async componentDidMount(){
     registerForPushNotificationsAsync()
     .then((token) => {
       this.setState({
         deviceID: token,
       },()=>{ 
-        this.updateLocationInterval();
+        Location.startLocationUpdatesAsync(LOCATION_UPDATES_TASK, {
+          accuracy: Location.Accuracy.Highest,
+          distanceInterval: 1,
+          deferredUpdatesInterval: 1000, 
+          foregroundService: {
+            notificationTitle: 'DefenShe is running.',
+            notificationBody: 'Your location might help someone, fetching your location.',
+          },
+        });
+        this.didUpdate()
       })
     });
   }
