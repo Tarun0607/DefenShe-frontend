@@ -22,24 +22,25 @@ export default class App extends Component{
       locationPermission = (status.status === 'granted');
       this.setState({ locationPermission: locationPermission },()=>{
         if(this.state.locationPermission===true){
-          this.setState({locationPermissionType: (status.permissions.location.scope==="always")})
+          this.setState({locationPermissionType: (status.permissions.location.scope==="always")},()=>{
+            setTimeout( () => {
+              this.setState({ isLoaded: true })
+            },2000);
+          })
         }
       })
     })
-    setTimeout( () => {
-      this.setState({ isLoaded: true })
-    },2000);
     
   }
   render(){
     renderHomeScreen = ()=>{
-      if(this.state.locationPermission===true && this.state.locationPermissionType===false){
+      if(this.state.isLoaded===true && this.state.locationPermission===true && this.state.locationPermissionType===false){
         return(
           <View style={styles.home}> 
             <HomeScreen />
           </View>
         )
-      }else if(this.state.locationPermission===true && this.state.locationPermissionType===true){
+      }else if(this.state.isLoaded===true && this.state.locationPermission===true && this.state.locationPermissionType===true){
         return(
           <View style={styles.home}> 
             <HomeScreenBackground />

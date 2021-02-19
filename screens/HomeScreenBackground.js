@@ -5,16 +5,7 @@ import MapComponent from '../components/MapComponent';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
-// import * as TaskManager from 'expo-task-manager';
-// const TASK_FETCH_LOCATION = 'TASK_FETCH_LOCATION';
-// TaskManager.defineTask(TASK_FETCH_LOCATION, async ({ data: { locations }, error }) => {
-//   if (error) {
-//     console.error(error);
-//     return;
-//   }
-//   const [location] = locations;
-//   console.log(location);
-// });
+
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
@@ -79,15 +70,6 @@ export default class HomeScreen extends Component{
     })
   }
   async componentDidMount(){
-    // Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
-    //   accuracy: Location.Accuracy.Highest,
-    //   distanceInterval: 1,
-    //   deferredUpdatesInterval: 1000, 
-    //   foregroundService: {
-    //     notificationTitle: 'Using your location',
-    //     notificationBody: 'To turn off, go back to the app and switch something off.',
-    //   },
-    // });
     registerForPushNotificationsAsync()
     .then((token) => {
       this.setState({
