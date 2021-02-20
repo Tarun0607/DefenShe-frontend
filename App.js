@@ -2,53 +2,24 @@ import { StatusBar } from 'expo-status-bar';
 import React,{Component} from 'react';
 import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import AnimatedSplash from "react-native-animated-splash-screen";
-import HomeScreen from './screens/HomeScreen';
-import HomeScreenBackground from './screens/HomeScreenBackground';
+import RenderHome from './screens/RenderHome';
 import HeaderComponent from './components/HeaderComponent';
-import * as Permissions from 'expo-permissions';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 var locationPermission = false;
+const Drawer = createDrawerNavigator();
 export default class App extends Component{
   state = {
     isLoaded: false,
-    locationPermission: false,
-    locationPermissionType: false,
   }
   componentDidMount = async ()=>{
-    Permissions.askAsync(Permissions.LOCATION)
-    .then((status)=>{
-      locationPermission = (status.status === 'granted');
-      this.setState({ locationPermission: locationPermission },()=>{
-        if(this.state.locationPermission===true){
-          this.setState({locationPermissionType: (status.permissions.location.scope==="always")},()=>{
-            setTimeout( () => {
-              this.setState({ isLoaded: true })
-            },500);
-          })
-        }
-      })
-    }) 
+    setTimeout(()=>{
+      this.setState({isLoaded: true})
+    },1000)
   }
   render(){
-    renderHomeScreen = ()=>{
-      if(this.state.isLoaded===true && this.state.locationPermission===true && this.state.locationPermissionType===false){
-        return(
-          <View style={styles.home}> 
-            <HomeScreen />
-          </View>
-        )
-      }else if(this.state.isLoaded===true && this.state.locationPermission===true && this.state.locationPermissionType===true){
-        return(
-          <View style={styles.home}> 
-            <HomeScreenBackground />
-          </View>
-        )
-      }else{
-        return <View><Text style={{justifyContent: "center", textAlign: "center"}}>You need to enable location always to use this app</Text></View>;
-      }
-    }
-    const HomeScreenRender = renderHomeScreen();
     return(
       <AnimatedSplash
         translucent={true}
@@ -63,7 +34,14 @@ export default class App extends Component{
       <View style={styles.header}> 
         <HeaderComponent />
       </View>
-      {HomeScreenRender}
+      <View style={styles.home}> 
+        <NavigationContainer>
+          <Drawer.Navigator initialRouteName="Home">
+            <Drawer.Screen name="Home" component={RenderHome} />
+            <Drawer.Screen name="Notifications" component={RenderHome} />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </View>
     </View>
     </AnimatedSplash>
     )
@@ -83,6 +61,6 @@ const styles = StyleSheet.create({
   },
   home: {
     width: '100%',
-    flex: 0.9,
+    flex: 1,
   },
 });
