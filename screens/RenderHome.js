@@ -45,7 +45,7 @@ export default class RenderHome extends Component{
     return(
     <View style={styles.container}>
       <View style={styles.header}> 
-        <HeaderComponent />
+        <HeaderComponent props={this.props} />
       </View>
       <View style={styles.home}> 
       {HomeScreenRender}

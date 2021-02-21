@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { StyleSheet, Text, View, TouchableNativeFeedback, Dimensions } from 'react-native';
 import * as Font from 'expo-font';
-
+import {FontAwesome5} from '@expo/vector-icons';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -22,7 +22,7 @@ export default class Header extends Component{
         if(this.state.fontsLoaded===true)
         return(
             <View style={styles.headerRoot}>
-                
+                <FontAwesome5 onPress={()=>{this.props.props.navigation.toggleDrawer()}}style={styles.icon} size={30} name="bars" color="white"/>
                 <Text style={styles.text}>DefenShe</Text>
             </View>
         )
@@ -43,6 +43,11 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 25,
         fontFamily: 'Pacifico',
-        alignItems: 'center'
+    },
+    icon: {
+        alignItems: 'flex-end',
+        position: 'absolute',
+        right: 20,
+        bottom: 6,
     }
 });

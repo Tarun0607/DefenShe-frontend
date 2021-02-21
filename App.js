@@ -3,6 +3,7 @@ import React,{Component} from 'react';
 import { StyleSheet, Text, View, Dimensions, Button} from 'react-native';
 import AnimatedSplash from "react-native-animated-splash-screen";
 import RenderHome from './screens/RenderHome';
+import RenderAnalytics from './screens/AnalyticsScreen';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
@@ -33,7 +34,7 @@ export default class App extends Component{
           <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home" drawerType={'back'}>
               <Drawer.Screen name="Home" component={RenderHome} />
-              <Drawer.Screen name="Notifications" component={RenderHome} />
+              <Drawer.Screen name="Analytics" component={RenderAnalytics} />
             </Drawer.Navigator>
           </NavigationContainer>
         </View>
