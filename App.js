@@ -32,14 +32,15 @@ export default class App extends Component{
         <View style={styles.container}>
           <StatusBar style="auto" />
           <NavigationContainer>
-            <Drawer.Navigator initialRouteName="Home" drawerType={'back'} drawerPosition={'left'} hideStatusBar={true}
+            <Drawer.Navigator initialRouteName="Home" drawerType={'slide'} drawerPosition={'left'} hideStatusBar={true}
               drawerContentOptions={{
-                activeTintColor: '#e91e63',
+                activeTintColor: '#22A2D3',
                 itemStyle: { marginVertical: 5 },
+                labelStyle: {fontSize: 17, fontWeight: 'normal'}
               }}
             >
               <Drawer.Screen name="Home" component={RenderHome} />
-              <Drawer.Screen name="Analytics" component={RenderAnalytics} />
+              <Drawer.Screen name="Insights" component={RenderAnalytics} />
             </Drawer.Navigator>
           </NavigationContainer>
         </View>

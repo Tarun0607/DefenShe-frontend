@@ -22,7 +22,7 @@ export default class Header extends Component{
         if(this.state.fontsLoaded===true)
         return(
             <View style={styles.headerRoot}>
-                <FontAwesome5 onPress={()=>{this.props.props.navigation.toggleDrawer()}}style={styles.icon} size={30} name="bars" color="white"/>
+                <FontAwesome5 onPress={()=>{this.props.props.navigation.toggleDrawer()}}style={styles.icon} size={30} name="bars" color="#F9F1EF"/>
                 <Text style={styles.text}>DefenShe</Text>
             </View>
         )

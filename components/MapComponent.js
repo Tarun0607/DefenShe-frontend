@@ -4,7 +4,6 @@ import MapView from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import axios from 'axios';
 import {AppExports} from '../config/apiKey';
-const overlay = true;
 const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
                 {latitude: 12.947214, longitude: 80.138181, weight: 1},
                 {latitude: 12.947274, longitude: 80.138281, weight: 1},
