@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import HomeScreen from './HomeScreen';
 import HomeScreenBackground from './HomeScreenBackground';
 import * as Permissions from 'expo-permissions';
+import HeaderComponent from '../components/HeaderComponent';
 const windowWidth = Dimensions.get('window').width;
 var locationPermission = false;
 export default class RenderHome extends Component{
@@ -24,7 +25,7 @@ export default class RenderHome extends Component{
           })
         }
       })
-    }) 
+    })
   }
   render(){
     renderHomeScreen = ()=>{
@@ -43,7 +44,12 @@ export default class RenderHome extends Component{
     const HomeScreenRender = renderHomeScreen();
     return(
     <View style={styles.container}>
+      <View style={styles.header}> 
+        <HeaderComponent />
+      </View>
+      <View style={styles.home}> 
       {HomeScreenRender}
+      </View>
     </View>
     )
   }
@@ -53,5 +59,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: windowWidth,
+  },
+  header: {
+    width: '100%',
+    flex: 0.1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  home: {
+    width: '100%',
+    flex: 1,
   },
 });

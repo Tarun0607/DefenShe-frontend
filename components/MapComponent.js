@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'blue'
     },
     mapRoot:{
-      flex: 1,
+      flex: 0.9,
       width: '90%', 
       borderRadius: 20,
       overflow: 'hidden',

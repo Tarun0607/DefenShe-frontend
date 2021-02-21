@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mapview: {
-    flex: 0.75,
+    flex: 0.8,
     backgroundColor: '#fff',
     alignItems: 'center',
   },

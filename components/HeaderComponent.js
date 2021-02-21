@@ -22,6 +22,7 @@ export default class Header extends Component{
         if(this.state.fontsLoaded===true)
         return(
             <View style={styles.headerRoot}>
+                
                 <Text style={styles.text}>DefenShe</Text>
             </View>
         )
