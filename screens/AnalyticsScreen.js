@@ -15,6 +15,9 @@ export default class RenderAnalytics extends Component{
       <View style={styles.header}> 
         <HeaderComponent props={this.props}/>
       </View>
+      <View> 
+        <Text>Analytics screen of defenshe</Text>
+      </View>
     </View>
     )
   }
