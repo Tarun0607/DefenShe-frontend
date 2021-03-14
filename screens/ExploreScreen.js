@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { StyleSheet, Text, View, Dimensions} from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
 const windowWidth = Dimensions.get('window').width;
-export default class RenderAnalytics extends Component{
+export default class RenderExplore extends Component{
   state = {
   }
   componentDidMount = async ()=>{
@@ -14,7 +14,7 @@ export default class RenderAnalytics extends Component{
         <HeaderComponent props={this.props}/>
       </View>
       <View> 
-        <Text>Analytics screen of defenshe</Text>
+        <Text>Explore screen of defenshe</Text>
       </View>
     </View>
     )

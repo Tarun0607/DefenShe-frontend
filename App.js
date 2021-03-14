@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Dimensions, Button} from 'react-native';
 import AnimatedSplash from "react-native-animated-splash-screen";
 import RenderHome from './screens/RenderHome';
 import RenderAnalytics from './screens/AnalyticsScreen';
+import RenderExplore from './screens/ExploreScreen';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;
@@ -41,6 +42,7 @@ export default class App extends Component{
             >
               <Drawer.Screen name="Home" component={RenderHome} />
               <Drawer.Screen name="Insights" component={RenderAnalytics} />
+              <Drawer.Screen name="Explore" component={RenderExplore} />
             </Drawer.Navigator>
           </NavigationContainer>
         </View>
