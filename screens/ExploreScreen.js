@@ -13,8 +13,8 @@ export default class RenderExplore extends Component{
       <View style={styles.header}> 
         <HeaderComponent props={this.props}/>
       </View>
-      <View> 
-        <Text>Explore screen of defenshe</Text>
+      <View style={styles.textView}> 
+        <Text style={styles.textFont}>News Feed</Text>
       </View>
     </View>
     )
@@ -36,4 +36,12 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
   },
+  textView:{
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textFont: {
+    fontSize: 30,
+  }
 });
