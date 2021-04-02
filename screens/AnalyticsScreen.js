@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { StyleSheet, Text, View, Dimensions, Image, ScrollView} from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
-import { WebView } from 'react-native-webview';
+import WebViewComponent from '../components/WebViewAnalytics';
 const windowWidth = Dimensions.get('window').width;
 export default class RenderAnalytics extends Component{
   state = {
@@ -14,11 +14,8 @@ export default class RenderAnalytics extends Component{
       <View style={styles.header}> 
         <HeaderComponent props={this.props}/>
       </View>
-      <View style={styles.textView}> 
-        <Text style={styles.textFont}>Analytics Screen</Text>
-        <View style={{flex:1}}> 
-        <WebView source={{ uri:'https://datastudio.google.com/embed/u/0/reporting/f9915176-47e8-4025-b2b1-68f8c02246b3/page/MKtAC' }} style={{ flex:1 }} />
-        </View>
+      <View style={styles.webView}>
+        <WebViewComponent />
       </View>
     </View>
     )
@@ -36,7 +33,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textView:{
+  webView:{
     flex: 1,
   },
   textFont: {
