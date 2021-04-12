@@ -4,19 +4,8 @@ import MapView from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import axios from 'axios';
 import {AppExports} from '../config/apiKey';
-const points = [{latitude: 12.946214, longitude: 80.131781, weight: 1},
-                {latitude: 12.947214, longitude: 80.138181, weight: 1},
-                {latitude: 12.947274, longitude: 80.138281, weight: 1},
-                {latitude: 12.946214, longitude: 80.138181, weight: 1},
-                {latitude: 12.947914, longitude: 80.137181, weight: 1},
-                {latitude: 12.946814, longitude: 80.139781, weight: 1},
-                {latitude: 12.945214, longitude: 80.134781, weight: 1},
-                {latitude: 12.945114, longitude: 80.134981, weight: 1},
-                {latitude: 12.944214, longitude: 80.134781, weight: 1},
-                {latitude: 12.945214, longitude: 80.135781, weight: 1},
-                {latitude: 12.946214, longitude: 80.134681, weight: 1},
-                {latitude: 12.945714, longitude: 80.138281, weight: 1},
-	];
+import {Points} from '../assets/locationCluster';
+const points = Points;
 const API_KEY = AppExports[0].googleServiceKey;
 
 export default class Map extends Component{
@@ -72,10 +61,9 @@ export default class Map extends Component{
           >
           <MapView.Heatmap 
             points={points}
-            opacity={0.2}
+            opacity={0.6}
             radius={50}
-            maxIntensity={10}
-            gradientSmoothing={5}
+            gradient={{colors:["green","yellow","red"],startPoints:[0.09,0.3,0.8],colorMapSize:512}}
           />
           <MapView.Circle
             center={{latitude: this.props.location.latitude, longitude: this.props.location.longitude}}

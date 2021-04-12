@@ -6,7 +6,7 @@ export default class WebViewAnalytics extends Component{
   render(){
     return(
         <View style={styles.webViewContainer}>        
-            <WebView source={{ uri:'https://datastudio.google.com/embed/u/0/reporting/f9915176-47e8-4025-b2b1-68f8c02246b3/page/MKtAC' }} style={styles.webViewBox} />
+            <WebView source={{ uri:'https://datastudio.google.com/embed/reporting/3229b48b-80be-4486-a2bd-05f59ef0a35c/page/qh7AC' }} style={styles.webViewBox} />
         </View>
     )
   }
