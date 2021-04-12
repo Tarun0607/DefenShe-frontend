@@ -5927,7 +5927,7 @@ var Points = [
     }
   ]
 Points.forEach(obj=>{
-  obj.weight = obj.weight+2
+  obj.weight = obj.weight+1.5
 })
 
 export var Points;

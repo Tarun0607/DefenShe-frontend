@@ -7,10 +7,24 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-
+import { Crypt, RSA } from 'hybrid-crypto-js';
 const LOCATION_UPDATES_TASK = 'location-updates';
 const locationEventsEmitter = new EventEmitter();
 
+const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+	// The standard secure default length for RSA keys is 2048 bits
+	modulusLength: 2048,
+})
+const entropy = 'Encryption of Defenshe';
+const rsa = new RSA();
+const crypt = new Crypt({
+  // Default AES standard is AES-CBC. Options are:
+  // AES-ECB, AES-CBC, AES-CFB, AES-OFB, AES-CTR, AES-GCM, 3DES-ECB, 3DES-CBC, DES-ECB, DES-CBC
+  aesStandard: 'AES-CBC',
+  // Default RSA standard is RSA-OAEP. Options are:
+  // RSA-OAEP, RSAES-PKCS1-V1_5
+  rsaStandard: 'RSA-OAEP',
+});
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
