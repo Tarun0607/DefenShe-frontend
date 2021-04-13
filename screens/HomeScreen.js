@@ -2,6 +2,8 @@ import React,{Component} from 'react';
 import { StyleSheet, View } from 'react-native';
 import TriggerComponent from '../components/TriggerComponent.js';
 import MapComponent from '../components/MapComponent';
+
+import {RSAEncrypt,RSADecrypt} from '../functions/RSAAlgorithms';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
@@ -34,6 +36,11 @@ async function registerForPushNotificationsAsync() {
 }
 
 async function sendLocation(deviceId, latitude, longitude){
+  // Encryption with one public RSA key
+  const encryptedID = RSAEncrypt(deviceId);
+  console.log(encryptedID);
+  //const decryptedID = RSADecrypt(encryptedID);
+  //console.log(decryptedID);
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   var requestOptions = {
