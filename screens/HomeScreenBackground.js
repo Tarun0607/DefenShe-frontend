@@ -54,7 +54,6 @@ async function sendLocation(deviceId, latitude, longitude){
   
   // Encryption with one public RSA key
   const encryptedID = RSAEncrypt(deviceId);
-  console.log(encryptedID);
   // const decryptedID = RSADecrypt(encryptedID);
   // console.log(decryptedID);
   var myHeaders = new Headers();
@@ -62,7 +61,7 @@ async function sendLocation(deviceId, latitude, longitude){
   var requestOptions = {
     method: 'POST',
     headers: myHeaders,
-    body: JSON.stringify({deviceID:deviceId,latitude:latitude,longitude:longitude}),
+    body: JSON.stringify({deviceID:encryptedID,latitude:latitude,longitude:longitude}),
   };
   fetch("https://defenshe.azurewebsites.net/location/", requestOptions)
   .then(function (response) {
