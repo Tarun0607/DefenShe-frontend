@@ -51,17 +51,16 @@ TaskManager.defineTask(LOCATION_UPDATES_TASK, async ({ data: { locations } }) =>
 });
 
 async function sendLocation(deviceId, latitude, longitude){
-  
   // Encryption with one public RSA key
   const encryptedID = RSAEncrypt(deviceId);
-  // const decryptedID = RSADecrypt(encryptedID);
-  // console.log(decryptedID);
+  const encryptedLat = RSAEncrypt(latitude);
+  const encryptedLon = RSAEncrypt(longitude);
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   var requestOptions = {
     method: 'POST',
     headers: myHeaders,
-    body: JSON.stringify({deviceID:encryptedID,latitude:latitude,longitude:longitude}),
+    body: JSON.stringify({deviceID:encryptedID,latitude:encryptedLat,longitude:encryptedLon}),
   };
   fetch("https://defenshe.azurewebsites.net/location/", requestOptions)
   .then(function (response) {
