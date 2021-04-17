@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Content } from "native-base";
+import { Container } from "native-base";
 import Articles from "./list";
 
 export default class CardView extends React.Component {

@@ -6,10 +6,8 @@ import Card from "./card";
 export default class Articles extends Component {
 	state = {
 		data: [],
-		loaded: false,
-		category: this.props.category
+		loaded: false
 	};
-
 	componentDidMount() {
 		this.fetchData();
 	}
@@ -23,7 +21,7 @@ export default class Articles extends Component {
 		});
 	};
 
-	_keyExtractor = (item, index) => index;
+	_keyExtractor = (item, index) => index.toString();
 
 	_renderItem = ({ item, index }) => (
 		<Card

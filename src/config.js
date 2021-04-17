@@ -1,8 +1,9 @@
 
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions} from "react-native";
+const windowWidth = Dimensions.get('window').width;
 const themeStyle = StyleSheet.create({
 	body: { backgroundColor: "#EDF0F6" },
-	spinnerHolder: { flex: 1, alignItems: "center", justifyContent: "center" },
+	spinnerHolder: { flex: 1, alignItems: "center", justifyContent: "center",width: windowWidth },
 	container: {
 		marginTop: 15,
 		marginRight: 15,

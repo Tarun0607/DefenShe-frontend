@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import {
 	Text,
-	Image,
 	Dimensions,
 	TouchableWithoutFeedback,
 	Animated,
 	View,
 	Linking
 } from "react-native";
-import { ImagePlaceHolder, themeStyle } from "../src/config";
+import {themeStyle } from "../src/config";
 
 export default class Card extends Component {
 	state = {
@@ -33,21 +32,13 @@ export default class Card extends Component {
 		}).start();
 	};
 
-	_onPressIn = () => {
+	_onPress = () => {
 		Animated.timing(this.state.scaleAnim, {
 			toValue: 0.95,
 			duration: 500,
 			useNativeDriver: true
 		}).start();
 		Linking.openURL(this.props.url);
-	};
-
-	_onPressOut = () => {
-		Animated.timing(this.state.scaleAnim, {
-			toValue: 1,
-			duration: 500,
-			useNativeDriver: true
-		}).start();
 	};
 
 	componentDidMount() {
@@ -80,8 +71,7 @@ export default class Card extends Component {
 				]}
 			>
 				<TouchableWithoutFeedback
-					//onPressIn={e => this._onPressIn(e)}
-					//onPressOut={e => this._onPressOut(e)}
+					onPress={e => this._onPress(e)}
 					style={[
 						themeStyle.thumbnailHolder,
 						{
@@ -100,7 +90,7 @@ export default class Card extends Component {
 						source={{
 							cache: "force-cache",
 							uri:
-								this.props.image != null ? this.props.image : ImagePlaceHolder
+								this.props.image !== null ? this.props.image : "http://placehold.jp/350x150.png"
 						}}
 						onLoad={e => this._onLoad(e)}
 					/>
