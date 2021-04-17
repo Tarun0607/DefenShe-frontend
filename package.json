@@ -22,6 +22,8 @@
     "expo-task-manager": "^9.0.0",
     "fbemitter": "^3.0.0",
     "hybrid-crypto-js": "^0.2.4",
+    "native-base": "^2.15.2",
+    "newsapi": "^2.4.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
