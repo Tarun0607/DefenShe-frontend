@@ -1,4 +1,4 @@
-import {AppExports} from '../config/apiKey';
+import {AppExports} from '../config/config';
 import { Crypt, RSA } from 'hybrid-crypto-js';
 
 const publicKey = AppExports[1].publicKey;

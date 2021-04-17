@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableNativeFeedback } from 'react-native';
 import MapView from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import axios from 'axios';
-import {AppExports} from '../config/apiKey';
+import {AppExports} from '../config/config';
 import {Points} from '../assets/locationCluster';
 const points = Points;
 const API_KEY = AppExports[0].googleServiceKey;

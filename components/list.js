@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, ActivityIndicator, View } from "react-native";
-import {themeStyle } from "../src/config";
+import {themeStyle } from "../config/config";
 import Card from "./card";
 
 export default class Articles extends Component {
@@ -27,6 +27,7 @@ export default class Articles extends Component {
 		<Card
 			publish={item.date}
 			image={item.imageUri}
+			source={"DefenShe Crawler"}
 			title={item.title}
 			url={item.url}
 			index={index}

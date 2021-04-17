@@ -7,7 +7,7 @@ import {
 	View,
 	Linking
 } from "react-native";
-import {themeStyle } from "../src/config";
+import {themeStyle } from "../config/config";
 
 export default class Card extends Component {
 	state = {
