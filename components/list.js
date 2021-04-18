@@ -27,7 +27,7 @@ export default class Articles extends Component {
 		<Card
 			publish={item.date}
 			image={item.imageUri}
-			source={"DefenShe Crawler"}
+			source={item.source}
 			title={item.title}
 			url={item.url}
 			index={index}

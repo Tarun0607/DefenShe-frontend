@@ -90,7 +90,7 @@ export default class Card extends Component {
 						source={{
 							cache: "force-cache",
 							uri:
-								this.props.image !== null ? this.props.image : "http://placehold.jp/350x150.png"
+								this.props.image !== null ? this.props.image : "https://gumlet.assettype.com/nationalherald%2F2018-07%2F69bccbed-f3d1-4a72-a682-c6096f824cb9%2Fslogan_boomerangs_modi_sarkar_bahut_huwa_naari_pe_vaar.jpg?rect=1%2C0%2C969%2C545&auto=format%2Ccompress&w=350"
 						}}
 						onLoad={e => this._onLoad(e)}
 					/>

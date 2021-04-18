@@ -34,18 +34,18 @@ const themeStyle = StyleSheet.create({
 		left: 0,
 		top: 5,
 		color: "#538ae4",
-		fontSize: 11,
+		fontSize: 14,
 		padding: 5,
 		overflow: "hidden",
 		borderRadius: 10,
-		backgroundColor: "rgba(83, 138, 228, 0.2)"
+		backgroundColor: "rgba(83, 138, 228, 0.15)"
 	},
 	publishDate: {
 		color: "#555",
-		fontSize: 8,
+		fontSize: 14,
 		position: "absolute",
 		right: 0,
-		top: 15
+		top: 7
 	},
 	title: {
 		color: "#263343",
