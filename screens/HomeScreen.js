@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { StyleSheet, View } from 'react-native';
+import {StyleSheet, Text, View, TouchableHighlight, Linking } from 'react-native';
 import TriggerComponent from '../components/TriggerComponent.js';
 import MapComponent from '../components/MapComponent';
 
@@ -95,6 +95,17 @@ export default class HomeScreen extends Component{
           <View style={styles.mapview}>
             <MapComponent deviceID={this.state.deviceID} location={{latitude: this.state.latitude, longitude: this.state.longitude}} />
           </View>
+          <View style={styles.panelView}>
+            <View style={styles.pane}>
+              <TouchableHighlight
+                style={styles.sosButton} 
+                onPress={()=>{Linking.openURL('tel:112')}}>
+                  <View style={{flex:1,justifyContent: "center"}}>
+                      <Text style={styles.text}>SOS</Text>
+                  </View>
+              </TouchableHighlight>
+            </View>
+          </View>
         </View>
       )
       else
@@ -114,12 +125,35 @@ const styles = StyleSheet.create({
   },
   triggerview: {
     flex: 0.16,
-    backgroundColor: '#fff',
     alignItems: 'center',
   },
   mapview: {
-    flex: 0.6,
-    backgroundColor: '#fff',
+    flex: 0.64,
     alignItems: 'center',
   },
+  panelView: {
+    marginLeft: '5%',
+    width: '90%',
+    marginTop: 20,
+    flex:0.15,
+    flexDirection: "row",
+    alignItems: 'center',
+  },
+  sosButton:{
+    flex:1,
+  },
+  text: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    fontSize: 30,
+    fontWeight: '700',
+  },
+  pane: {
+    borderRadius: 10,
+    overflow: "hidden",
+    flex: 0.25,
+    height: '75%',
+    backgroundColor: 'red',
+  }
 });
