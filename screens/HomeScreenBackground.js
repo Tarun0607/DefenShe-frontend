@@ -129,15 +129,16 @@ export default class HomeScreen extends Component{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     width: '100%',
   },
   triggerview: {
-    flex: 0.2,
+    flex: 0.16,
     backgroundColor: '#fff',
     alignItems: 'center',
   },
   mapview: {
-    flex: 0.8,
+    flex: 0.6,
     backgroundColor: '#fff',
     alignItems: 'center',
   },

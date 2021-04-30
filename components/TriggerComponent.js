@@ -104,9 +104,9 @@ export default class Trigger extends Component{
       else
       return null
     }
-    var something = cancelAlert()
+    var cancelAlertButton = cancelAlert()
     return(
-      <View style={{flex:0.7,flexDirection:'row', width:'100%'}}>
+      <View style={{flex:0.9,flexDirection:'row', width:'100%'}}>
         <Modal
         animationType="fade"
         transparent={true}
@@ -144,7 +144,7 @@ export default class Trigger extends Component{
               <Text style={styles.text}>{this.state.display}</Text>
           </View>
         </TouchableNativeFeedback>
-        {something}
+        {cancelAlertButton}
       </View>
     )
   }

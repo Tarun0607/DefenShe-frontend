@@ -5,6 +5,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import axios from 'axios';
 import {AppExports} from '../config/config';
 import {Points} from '../assets/locationCluster';
+import { Button } from 'native-base';
 const points = Points;
 const API_KEY = AppExports[0].googleServiceKey;
 
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'blue'
     },
     mapRoot:{
-      flex: 0.9,
+      flex: 1,
       width: '90%', 
       borderRadius: 20,
       overflow: 'hidden',
@@ -111,4 +112,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
     },
+    emergencyCall: {
+      flex: 0.2
+    }
 });
