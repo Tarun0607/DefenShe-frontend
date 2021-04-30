@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
       elevation: 3,
     },
     map: {
-        flex: 1,
-        width: '100%',
+      flex: 1,
+      width: '100%',
     },
     emergencyCall: {
       flex: 0.2
