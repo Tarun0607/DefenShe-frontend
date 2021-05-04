@@ -1,12 +1,12 @@
 {
-  "name": "Venkat",
-  "username": "venkatr21",
-  "street": "Chromepet",
-  "city": "Chennai",
-  "country": "India",
-  "zipcode": "600064",
+  "name": "User",
+  "username": "user",
+  "street": "Street",
+  "city": "City",
+  "country": "Country",
+  "zipcode": "xxxxxx",
   "avatar": "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80",
   "avatarBackground": "https://i.imgur.com/rXVcgTZ.jpg",
-  "mobile": "+91 99627 22146",
-  "email": "mail2venkat21@gmail.com"
+  "mobile": "+xx xxxxx xxxxx",
+  "email": "xxx@xxx.xxx"
 }
