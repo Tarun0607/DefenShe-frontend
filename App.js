@@ -5,9 +5,10 @@ import AnimatedSplash from "react-native-animated-splash-screen";
 import RenderHome from './screens/RenderHome';
 import RenderAnalytics from './screens/AnalyticsScreen';
 import RenderExplore from './screens/ExploreScreen';
-import AdsScreen from './screens/AdsScreen';
+import AdsScreen from './screens/UserProfile';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
+import UserProfile from './screens/UserProfile';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const Drawer = createDrawerNavigator();
@@ -44,6 +45,7 @@ export default class App extends Component{
               <Drawer.Screen name="Home" component={RenderHome} />
               <Drawer.Screen name="Insights" component={RenderAnalytics} />
               <Drawer.Screen name="Explore" component={RenderExplore} />
+              <Drawer.Screen name="Your Profile" component={UserProfile} /> 
             </Drawer.Navigator>
           </NavigationContainer>
         </View>
