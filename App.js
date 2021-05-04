@@ -5,6 +5,7 @@ import AnimatedSplash from "react-native-animated-splash-screen";
 import RenderHome from './screens/RenderHome';
 import RenderAnalytics from './screens/AnalyticsScreen';
 import RenderExplore from './screens/ExploreScreen';
+import AdsScreen from './screens/AdsScreen';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 const windowWidth = Dimensions.get('window').width;

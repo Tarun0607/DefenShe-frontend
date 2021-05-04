@@ -8,6 +8,10 @@ import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import {RSAEncrypt,RSADecrypt} from '../functions/RSAAlgorithms';
+import {
+  AdMobBanner,
+  PublisherBanner,
+} from 'expo-ads-admob';
 const LOCATION_UPDATES_TASK = 'location-updates';
 const locationEventsEmitter = new EventEmitter();
 
@@ -129,7 +133,10 @@ export default class HomeScreen extends Component{
                   </View>
               </TouchableHighlight>
             </View>
-          </View>
+            <View style={styles.ads}>
+              <AdMobBanner bannerSize="largeBanner" adUnitID={"ca-app-pub-9152673793842667/9991308346"} />
+            </View>
+            </View>
         </View>
       )
       else
@@ -175,5 +182,12 @@ const styles = StyleSheet.create({
     flex: 0.25,
     height: '75%',
     backgroundColor: 'red',
+  },
+  ads: {
+    marginLeft: 10,
+    overflow: "hidden",
+    flex: 0.75,
+    borderRadius: 10,
+    borderWidth: 1
   }
 });
