@@ -7,6 +7,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginBottom: 25,
+    backgroundColor: '#FFF',
+    flex: 1,
+    paddingTop: 30,
   },
   emailColumn: {
     flexDirection: 'row',
@@ -40,17 +43,15 @@ const styles = StyleSheet.create({
   },
 })
 
-const Email = ({ containerStyle, onPressEmail, name, email, index }) => (
+const Email = ({name, email }) => (
   <TouchableOpacity>
-    <View style={[styles.container, containerStyle]}>
+    <View style={styles.container}>
       <View style={styles.iconRow}>
-        {index === 0 && (
-          <Icon
-            name="email"
-            underlayColor="transparent"
-            iconStyle={styles.emailIcon}
-          />
-        )}
+        <Icon
+          name="email"
+          underlayColor="transparent"
+          iconStyle={styles.emailIcon}
+        />
       </View>
       <View style={styles.emailRow}>
         <View style={styles.emailColumn}>
@@ -58,7 +59,7 @@ const Email = ({ containerStyle, onPressEmail, name, email, index }) => (
         </View>
         <View style={styles.emailNameColumn}>
           {name.length !== 0 && (
-            <Text style={styles.emailNameText}>{name}</Text>
+            <Text style={styles.emailNameText}>{name} </Text>
           )}
         </View>
       </View>

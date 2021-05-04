@@ -1,10 +1,6 @@
-import {
-  AdMobBanner,
-  PublisherBanner,
-} from 'expo-ads-admob'
 import React, { Component } from 'react'
 import HeaderComponent from '../components/HeaderComponent';
-import { SafeAreaView, ScrollView, View, StyleSheet, Text, Dimensions } from 'react-native';
+import {View, StyleSheet, Text, Dimensions } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 import contactData from '../mocks/contact.json'
 import Profile from '../components/profile/Profile';

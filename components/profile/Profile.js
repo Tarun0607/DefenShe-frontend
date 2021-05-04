@@ -4,16 +4,16 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  Linking,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  Dimensions
-} from 'react-native'
-import PropTypes from 'prop-types'
-
+  Dimensions,
+  LogBox,Modal, TouchableHighlight, TextInput
+} from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+LogBox.ignoreAllLogs(true);
 import Email from './Email'
 import Separator from './Separator'
 import Tel from './Tel'
@@ -28,11 +28,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-  },
-  emailContainer: {
-    backgroundColor: '#FFF',
-    flex: 1,
-    paddingTop: 30,
   },
   headerBackgroundImage: {
     paddingBottom: 20,
@@ -54,17 +49,21 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  headerRowOne: {
+    flexDirection: 'row',
+    width: '100%',
+  },
+  editIcon: {
+    backgroundColor: "rgba(245,245,245,0.2)",
+    padding: 10,
+    borderRadius: 20,
+  },
   placeIcon: {
     color: 'white',
     fontSize: 26,
   },
   scroll: {
     backgroundColor: '#FFF',
-  },
-  telContainer: {
-    backgroundColor: '#FFF',
-    flex: 1,
-    paddingTop: 30,
   },
   userAddressRow: {
     alignItems: 'center',
@@ -79,49 +78,129 @@ const styles = StyleSheet.create({
     paddingLeft: 3,
   },
   userImage: {
+    marginLeft: "30%",
+    marginHorizontal: 'auto',
     borderColor: '#FFF',
     borderRadius: 85,
     borderWidth: 3,
     height: 170,
     marginBottom: 15,
-    width: 170,
+    width: "40%",
   },
   userNameText: {
+    width: '100%',
     color: '#FFF',
     fontSize: 22,
     fontWeight: 'bold',
     paddingBottom: 8,
     textAlign: 'center',
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+      flex:0.8,
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+  },
+  modalScroll: {
+    flex:1,
+  },
+  modalButtons: {
+    flex:0.2,
+    margin: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  openButton: {
+      backgroundColor: '#F194FF',
+      borderRadius: 20,
+      width: '40%',
+      margin: '5%',
+      padding: 10,
+      elevation: 2,
+  },
+  textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+  },
+  modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+      fontWeight: '700',
+      fontSize: 20,
+  },
+  formContainer: {
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+  },
+  formInput: {
+    width: "90%",
+    height: 44,
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 15,
+    backgroundColor: 'rgba(240,240,240,0.5)',
+    fontWeight: '700'
+  },
 })
 
-class Contact extends Component {
-
-  onPressPlace = () => {
-    console.log('place')
+class Profile extends Component {
+  state={
+    modalVisible: false,
+    isUpdated: false,
   }
-
-  onPressTel = number => {
-    Linking.openURL(`tel://${number}`).catch(err => console.log('Error:', err))
+  componentDidMount = async ()=>{
+    let result = await SecureStore.getItemAsync("isUpdated");
+    if (result) {
+      this.setState({isUpdated: true});
+      let name = await SecureStore.getItemAsync("name");
+      let email = await SecureStore.getItemAsync("email");
+      let mobile = await SecureStore.getItemAsync("mobile");
+      let address = await SecureStore.getItemAsync("address");
+      let city = await SecureStore.getItemAsync("city");
+      let country = await SecureStore.getItemAsync("country");
+      let zipcode = await SecureStore.getItemAsync("zipcode");
+      this.setState({name, email, mobile, address, city, country, zipcode});
+    }
   }
-
-  onPressSms = () => {
-    console.log('sms')
+  submitForm(){
+    SecureStore.setItemAsync("isUpdated","true");
+    SecureStore.setItemAsync("name",this.state.name);
+    SecureStore.setItemAsync("email",this.state.email);
+    SecureStore.setItemAsync("mobile",this.state.mobile);
+    SecureStore.setItemAsync("address",this.state.address);
+    SecureStore.setItemAsync("city",this.state.city);
+    SecureStore.setItemAsync("country",this.state.country);
+    SecureStore.setItemAsync("zipcode",this.state.zipcode);
+    this.setState({isUpdated: true});
   }
-
-  onPressEmail = email => {
-    Linking.openURL(`mailto://${email}?subject=subject&body=body`).catch(err =>
-      console.log('Error:', err)
-    )
-  }
-
   renderHeader = () => {
     const {
       avatar,
       avatarBackground,
+    } = this.props;
+    const {
       name,
-      address: { city, country },
-    } = this.props
+      city, 
+      country
+    } = this.state.isUpdated?this.state:this.props
     return (
       <View style={styles.headerContainer}>
         <ImageBackground
@@ -130,17 +209,24 @@ class Contact extends Component {
           source={{uri: avatarBackground}}
         >
           <View style={styles.headerColumn}>
-            <Image
-              style={styles.userImage}
-              source={{uri: avatar}}
-            />
+            <View style={styles.headerRowOne}> 
+              <Image
+                style={styles.userImage}
+                source={{uri: avatar}}
+              />
+              <Icon
+                name="edit"
+                color="white"
+                iconStyle={styles.editIcon}
+                onPress={()=>{this.setState({modalVisible: true})}}
+              />
+            </View>
             <Text style={styles.userNameText}>{name} </Text>
             <View style={styles.userAddressRow}>
                 <Icon
                   name="place"
                   underlayColor="transparent"
                   iconStyle={styles.placeIcon}
-                  onPress={this.onPressPlace}
                 />
                 <Text style={styles.userCityText}>{city}, {country}  </Text>
             </View>
@@ -150,46 +236,109 @@ class Contact extends Component {
     )
   }
 
-  renderTel = () => (
-    <FlatList
-      contentContainerStyle={styles.telContainer}
-      data={this.props.tels}
-      renderItem={(list) => {
-        const { id, name, number } = list.item
-        return (
-          <Tel
-            key={`tel-${id}`}
-            index={list.index}
-            name={name}
-            number={number}
-          />
-        )
-      }}
-    />
-  )
+  renderTel = () => {
+    const name="mobile";
+    const {
+      mobile
+    } = this.state.isUpdated?this.state:this.props;
+    return (
+      <Tel
+        name={name}
+        number={mobile}
+      />
+    )
+  }
 
-  renderEmail = () => (
-    <FlatList
-      contentContainerStyle={styles.emailContainer}
-      data={this.props.emails}
-      renderItem={(list) => {
-        const { email, id, name } = list.item
-        return (
-          <Email
-            key={`email-${id}`.toString()}
-            index={list.index}
-            name={name}
-            email={email}
-          />
-        )
-      }}
-    />
-  )
+  renderEmail = () => {
+    const name="email";
+    const {
+      email
+    } = this.state.isUpdated?this.state:this.props;
+    return(
+      <Email
+        name={name}
+        email={email}
+      />
+    )
+      
+  }
 
   render() {
     return (
       <ScrollView style={styles.scroll}>
         <View style={styles.container}>
+          <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.modalVisible}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <ScrollView style={styles.modalScroll}>
+                  <View style={styles.formContainer}>
+                    <TextInput
+                      value={this.state.name}
+                      onChangeText={(name) => this.setState({ name })}
+                      placeholder={'Name'}
+                      style={styles.formInput}
+                    />
+                    <TextInput
+                      value={this.state.mobile}
+                      onChangeText={(mobile) => this.setState({ mobile })}
+                      placeholder={'Mobile'}
+                      style={styles.formInput}
+                    />
+                    <TextInput
+                      value={this.state.email}
+                      onChangeText={(email) => this.setState({ email })}
+                      placeholder={'Email'}
+                      style={styles.formInput}
+                    />
+                    <TextInput
+                      value={this.state.address}
+                      onChangeText={(address) => this.setState({ address })}
+                      placeholder={'Address Line 1'}
+                      style={styles.formInput}
+                    />
+                    <TextInput
+                      value={this.state.city}
+                      onChangeText={(city) => this.setState({ city })}
+                      placeholder={'City'}
+                      style={styles.formInput}
+                    />
+                    <TextInput
+                      value={this.state.country}
+                      onChangeText={(country) => this.setState({ country })}
+                      placeholder={'Country'}
+                      style={styles.formInput}
+                    />
+                    <TextInput
+                      value={this.state.zipcode}
+                      onChangeText={(zipcode) => this.setState({ zipcode })}
+                      placeholder={'Zipcode'}
+                      style={styles.formInput}
+                    />
+                  </View>
+                  <View style={styles.modalButtons}>
+                  <TouchableHighlight
+                    style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                    onPress={() => {
+                      this.submitForm();
+                      this.setState({modalVisible: false})
+                    }}>
+                    <Text style={styles.textStyle}>Update</Text>
+                  </TouchableHighlight>
+                  <TouchableHighlight
+                    style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                    onPress={() => {
+                      this.setState({modalVisible: false})
+                    }}>
+                    <Text style={styles.textStyle}>Cancel</Text>
+                  </TouchableHighlight>
+                  </View>
+                </ScrollView>
+              </View>
+            </View>
+          </Modal>
           <Card containerStyle={styles.cardContainer}>
             {this.renderHeader()}
             {this.renderTel()}
@@ -203,4 +352,4 @@ class Contact extends Component {
   }
 }
 
-export default Contact
+export default Profile;

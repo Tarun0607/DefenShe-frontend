@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginBottom: 25,
+    backgroundColor: '#FFF',
+    flex: 1,
+    paddingTop: 30,
   },
   iconRow: {
     flex: 2,
@@ -47,23 +50,19 @@ const styles = StyleSheet.create({
 })
 
 const Tel = ({
-  containerStyle,
-  index,
   name,
   number,
 }) => {
 
   return (
     <TouchableOpacity>
-      <View style={[styles.container, containerStyle]}>
+      <View style={styles.container}>
         <View style={styles.iconRow}>
-          {index === 0 && (
             <Icon
               name="call"
               underlayColor="transparent"
               iconStyle={styles.telIcon}
             />
-          )}
         </View>
         <View style={styles.telRow}>
           <View style={styles.telNumberColumn}>
