@@ -6,7 +6,8 @@ import React, { Component } from 'react'
 import HeaderComponent from '../components/HeaderComponent';
 import { SafeAreaView, ScrollView, View, StyleSheet, Text, Dimensions } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
-
+import contactData from '../mocks/contact.json'
+import Profile from '../components/profile/Profile';
 export default class UserProfile extends Component {
   render() {
     return (
@@ -15,8 +16,7 @@ export default class UserProfile extends Component {
           <HeaderComponent props={this.props}/>
         </View>
         <View style={styles.cardView}> 
-          <ScrollView>
-          </ScrollView>
+            <Profile {...contactData} />
         </View>
       </View>
     )
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cardView:{
+    width: '100%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
