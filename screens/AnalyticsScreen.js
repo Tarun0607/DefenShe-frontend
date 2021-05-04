@@ -2,11 +2,21 @@ import React,{Component} from 'react';
 import { StyleSheet, Text, View, Dimensions, Image, ScrollView} from 'react-native';
 import HeaderComponent from '../components/HeaderComponent';
 import WebViewComponent from '../components/WebViewAnalytics';
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  PublisherBanner,
+  AdMobRewarded,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
 const windowWidth = Dimensions.get('window').width;
 export default class RenderAnalytics extends Component{
   state = {
   }
   componentDidMount = async ()=>{
+  await AdMobInterstitial.setAdUnitID('ca-app-pub-3940256099942544/8691691433'); // Test ID, Replace with your-admob-unit-id
+  await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+  await AdMobInterstitial.showAdAsync();
   }
   render(){
     return(
