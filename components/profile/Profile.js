@@ -1,17 +1,6 @@
 import React, { Component } from 'react'
 import { Card, Icon } from 'react-native-elements'
-import {
-  FlatList,
-  Image,
-  ImageBackground,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  LogBox,Modal, TouchableHighlight, TextInput
-} from 'react-native';
+import {Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, View, Dimensions, LogBox,Modal, TouchableHighlight, TextInput } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 LogBox.ignoreAllLogs(true);
 import Email from './Email'
@@ -19,6 +8,19 @@ import Separator from './Separator'
 import Tel from './Tel'
 const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
+  verificationWarning:{
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  verificationWarningText:{
+    fontSize: 15,
+    backgroundColor: 'rgba(255, 45, 0, 0.6)',
+    fontWeight: '500',
+    borderRadius: 5,
+    textAlign: 'center',
+    width: '90%'
+  },
   cardContainer: {
     backgroundColor: '#FFF',
     borderWidth: 0,
@@ -259,8 +261,16 @@ class Profile extends Component {
         name={name}
         email={email}
       />
+    )   
+  }
+
+  renderVerificationWarning =() =>{
+    return(
+      <View 
+      style={styles.verificationWarning}>
+        <Text style={styles.verificationWarningText}>You need to verify your Identity to get monetized. </Text>
+      </View>
     )
-      
   }
 
   render() {
@@ -345,6 +355,7 @@ class Profile extends Component {
             {Separator()}
             {this.renderEmail()}
             {Separator()}
+            {this.renderVerificationWarning()}
           </Card>
         </View>
       </ScrollView>
