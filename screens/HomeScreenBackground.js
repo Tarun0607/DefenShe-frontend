@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import {RSAEncrypt,RSADecrypt} from '../functions/RSAAlgorithms';
+import * as SecureStore from 'expo-secure-store';
 import {
   AdMobBanner,
   PublisherBanner,
@@ -100,6 +101,7 @@ export default class HomeScreen extends Component{
       this.setState({
         deviceID: token,
       },()=>{ 
+        SecureStore.setItemAsync("deviceID",token);
         Location.startLocationUpdatesAsync(LOCATION_UPDATES_TASK, {
           accuracy: Location.Accuracy.Highest,
           distanceInterval: 1,

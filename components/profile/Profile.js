@@ -7,7 +7,23 @@ import Email from './Email'
 import Separator from './Separator'
 import Tel from './Tel'
 const windowWidth = Dimensions.get('window').width;
+import axios from 'axios';
 const styles = StyleSheet.create({
+  creditView: {
+    marginTop: 20,
+    marginBottom: 20,
+    flex: 0.4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  creditPlate: {
+    width: "60%",
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: 'rgb(122, 184, 240)',
+    elevation: 5,
+    overflow: 'hidden'
+  },
   verificationWarning:{
     width: '100%',
     alignItems: 'center',
@@ -167,6 +183,9 @@ class Profile extends Component {
   state={
     modalVisible: false,
     isUpdated: false,
+    deviceID: "",
+    credit: 0,
+    creditConnected: false
   }
   componentDidMount = async ()=>{
     let result = await SecureStore.getItemAsync("isUpdated");
@@ -181,8 +200,36 @@ class Profile extends Component {
       let zipcode = await SecureStore.getItemAsync("zipcode");
       this.setState({name, email, mobile, address, city, country, zipcode});
     }
+    const deviceID = await SecureStore.getItemAsync("deviceID");
+    this.setState({deviceID},()=>{
+      var requestOptions = {
+        method: 'GET',
+        url: "https://defenshe.azurewebsites.net/credit/"+this.state.deviceID,
+        headers: {
+          "Content-Type": "application/json",
+        }
+      };
+      axios(requestOptions)
+      .then((response)=>{
+        this.setState(response.data)
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    });
+    
   }
   submitForm(){
+    var requestOptions = {
+      method: 'POST',
+      url: "https://defenshe.azurewebsites.net/credit/",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({deviceID:this.state.deviceID, credit:0}),
+    };
+    axios(requestOptions)
+    this.setState({isUpdated: true});
     SecureStore.setItemAsync("isUpdated","true");
     SecureStore.setItemAsync("name",this.state.name);
     SecureStore.setItemAsync("email",this.state.email);
@@ -191,7 +238,6 @@ class Profile extends Component {
     SecureStore.setItemAsync("city",this.state.city);
     SecureStore.setItemAsync("country",this.state.country);
     SecureStore.setItemAsync("zipcode",this.state.zipcode);
-    this.setState({isUpdated: true});
   }
   renderHeader = () => {
     const {
@@ -237,7 +283,13 @@ class Profile extends Component {
       </View>
     )
   }
-
+  renderCredit =() =>{
+    return(
+      <View style={styles.creditView}>
+        <View style={styles.creditPlate}></View>
+      </View>
+    )
+  }
   renderTel = () => {
     const name="mobile";
     const {
@@ -355,6 +407,7 @@ class Profile extends Component {
             {Separator()}
             {this.renderEmail()}
             {Separator()}
+            {this.renderCredit()}
             {this.renderVerificationWarning()}
           </Card>
         </View>
