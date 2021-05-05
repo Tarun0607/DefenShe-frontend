@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Card, Icon } from 'react-native-elements'
-import {Image, ImageBackground, Platform, ScrollView, StyleSheet, Text, View, Dimensions, LogBox,Modal, TouchableHighlight, TextInput } from 'react-native';
+import {Image, ImageBackground,TouchableHighlight, Platform, ScrollView, StyleSheet, Text, View, Dimensions, LogBox,Modal, TextInput, TouchableNativeFeedback } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-LogBox.ignoreAllLogs(true);
+import * as Font from 'expo-font';
 import Email from './Email'
 import Separator from './Separator'
 import Tel from './Tel'
@@ -21,8 +21,31 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 10,
     backgroundColor: 'rgb(122, 184, 240)',
-    elevation: 5,
+    elevation: 10,
     overflow: 'hidden'
+  },
+  creditFeedbackView: {
+    flex: 1,
+  },
+  creditTextView: {
+    height: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  creditScore: {
+    flex: 0.5,
+    textAlign: 'center',
+    fontSize: 50,
+    fontFamily: 'LobsterTwo',
+    color: 'black',
+  },
+  creditLabel: {
+    padding: 10,
+    flex: 0.5,
+    textAlign: 'left',
+    fontSize: 20,
+    fontFamily: 'sans-serif-medium',
+    color: 'black',
   },
   verificationWarning:{
     width: '100%',
@@ -187,7 +210,35 @@ class Profile extends Component {
     credit: 0,
     creditConnected: false
   }
+  async loadFonts() {
+    await Font.loadAsync({
+        'LobsterTwo': require('../../assets/fonts/LobsterTwo-Bold.otf'),
+    });
+    this.setState({ fontsLoaded: true });
+  }
+  fetchCredits= async ()=>{
+    const deviceID = await SecureStore.getItemAsync("deviceID");
+    this.setState({deviceID},()=>{
+      var requestOptions = {
+        method: 'GET',
+        url: "https://defenshe.azurewebsites.net/credit/"+this.state.deviceID,
+        headers: {
+          "Content-Type": "application/json",
+        }
+      };
+      axios(requestOptions)
+      .then((response)=>{
+        this.setState(response.data,()=>{
+          setTimeout(this.fetchCredits, 10000);
+        })
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    });
+  }
   componentDidMount = async ()=>{
+    await this.loadFonts();
     let result = await SecureStore.getItemAsync("isUpdated");
     if (result) {
       this.setState({isUpdated: true});
@@ -200,24 +251,7 @@ class Profile extends Component {
       let zipcode = await SecureStore.getItemAsync("zipcode");
       this.setState({name, email, mobile, address, city, country, zipcode});
     }
-    const deviceID = await SecureStore.getItemAsync("deviceID");
-    this.setState({deviceID},()=>{
-      var requestOptions = {
-        method: 'GET',
-        url: "https://defenshe.azurewebsites.net/credit/"+this.state.deviceID,
-        headers: {
-          "Content-Type": "application/json",
-        }
-      };
-      axios(requestOptions)
-      .then((response)=>{
-        this.setState(response.data)
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-    });
-    
+    this.fetchCredits();
   }
   submitForm(){
     var requestOptions = {
@@ -284,11 +318,35 @@ class Profile extends Component {
     )
   }
   renderCredit =() =>{
-    return(
-      <View style={styles.creditView}>
-        <View style={styles.creditPlate}></View>
-      </View>
-    )
+    if(this.state.creditConnected===true){
+      if(this.state.fontsLoaded===true)
+      return(
+        <View style={styles.creditView}>
+          <View style={styles.creditPlate}>
+            <TouchableNativeFeedback style={styles.creditFeedbackView}>
+              <View style={styles.creditTextView}>
+                <Text style={styles.creditScore}>{this.state.credit}</Text>
+                <Text style={styles.creditLabel}>DEFENSHE CREDITS</Text>
+              </View>
+            </TouchableNativeFeedback>
+          </View>
+        </View>
+      )
+      else
+      return(
+        <View style={styles.creditView}>
+          <View style={styles.creditPlate}>
+          </View>
+        </View>
+      )
+    }else{
+      return(
+        <View style={styles.verificationWarning}>
+          <Text style={styles.verificationWarningText}>Update your profile to set-up credit profile </Text>
+        </View>
+      )
+    }
+    
   }
   renderTel = () => {
     const name="mobile";
@@ -317,6 +375,7 @@ class Profile extends Component {
   }
 
   renderVerificationWarning =() =>{
+    if(this.state.creditConnected===true)
     return(
       <View 
       style={styles.verificationWarning}>
