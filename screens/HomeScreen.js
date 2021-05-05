@@ -7,6 +7,10 @@ import {RSAEncrypt,RSADecrypt} from '../functions/RSAAlgorithms';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Location from 'expo-location';
+import {
+  AdMobBanner,
+  PublisherBanner,
+} from 'expo-ads-admob';
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
@@ -105,6 +109,9 @@ export default class HomeScreen extends Component{
                   </View>
               </TouchableHighlight>
             </View>
+            <View style={styles.ads}>
+              <AdMobBanner servePersonalizedAds={false} bannerSize="largeBanner" adUnitID={"ca-app-pub-3940256099942544/6300978111"} />
+            </View>
           </View>
         </View>
       )
@@ -155,5 +162,12 @@ const styles = StyleSheet.create({
     flex: 0.25,
     height: '75%',
     backgroundColor: 'red',
+  },
+  ads: {
+    marginLeft: 10,
+    overflow: "hidden",
+    flex: 0.75,
+    borderRadius: 10,
+    borderWidth: 1
   }
 });
