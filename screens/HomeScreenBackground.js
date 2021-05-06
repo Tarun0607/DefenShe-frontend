@@ -136,7 +136,7 @@ export default class HomeScreen extends Component{
               </TouchableHighlight>
             </View>
             <View style={styles.ads}>
-              <AdMobBanner servePersonalizedAds={false} bannerSize="largeBanner" adUnitID={"ca-app-pub-3940256099942544/6300978111"} />
+              <AdMobBanner servePersonalizedAds={false} bannerSize="largeBanner" adUnitID={"ca-app-pub-9152673793842667/2888813567"} />
             </View>
           </View>
         </View>

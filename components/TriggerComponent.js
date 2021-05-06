@@ -1,6 +1,22 @@
 import React,{Component} from 'react';
-import { Alert, Modal, TouchableHighlight, StyleSheet, Text, View, TouchableNativeFeedback, Dimensions } from 'react-native';
+import {PixelRatio, Dimensions, Platform, Modal, TouchableHighlight,ScrollView, TouchableOpacity, StyleSheet, Text, View, TouchableNativeFeedback, FlatList, SafeAreaView } from 'react-native';
 import axios from 'axios';
+
+const {
+  width: SCREEN_WIDTH,
+  height: SCREEN_HEIGHT,
+} = Dimensions.get('window');
+
+const scale = SCREEN_WIDTH / 320;
+
+export function normalize(size) {
+  const newSize = size * scale 
+  if (Platform.OS === 'ios') {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize))
+  } else {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+  }
+}
 export default class Trigger extends Component{
   state={
     alertTriggered: false,
@@ -8,6 +24,63 @@ export default class Trigger extends Component{
     modalVisible: false,
     modalTimer: 6,
     alertColor: 'red',
+    isProximityVisible: false,
+  }
+  proxyUsers=[]
+  updateCredits = async (deviceID,name)=>{
+    var requestOptions = {
+      method: 'POST',
+      url: "https://defenshe.azurewebsites.net/credit/",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({deviceID: deviceID,name: name, credit:3}),
+    };
+    axios(requestOptions)
+    .then(()=>{})
+    .catch(()=>{});
+  }
+  renderProximity = ()=>{
+    if(this.proxyUsers.length>0 && this.state.isProximityVisible===true){
+      return(
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.isProximityVisible}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalProxyView}>
+            <Text style={styles.modalProxyText}>Mind to let us know who helped you? </Text>
+            <ScrollView style={{flex:1, width:'100%'}}>
+            {
+              this.proxyUsers.map((item, index) => (
+                <TouchableOpacity
+                    key = {index}
+                    style = {styles.renderProximityItemView}
+                    onPress = {()=>{
+                      this.updateCredits(item.deviceID,item.name);
+                      this.proxyUsers=[];
+                      this.setState({isProximityVisible: false});
+                    }}>
+                    <Text style = {styles.renderProximityItemText}>
+                      {item.name}
+                    </Text>
+                </TouchableOpacity>
+              ))
+            }
+            </ScrollView>
+            <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                onPress={() => {
+                  this.proxyUsers=[];
+                  this.setState({isProximityVisible: false});
+                }}>
+                <Text style={styles.textStyle}>Cancel</Text>
+            </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+      )
+    }
   }
   triggerManager = async (reqType)=>{
     var requestOptions = {
@@ -20,7 +93,12 @@ export default class Trigger extends Component{
     };
     axios(requestOptions)
     .then((response)=>{
-      console.log(response.data);
+      if(reqType=='delete'){
+        this.proxyUsers = response.data;
+        this.setState({isProximityVisible: true});
+      }
+    })
+    .catch((err)=>{
     })
   }
   confirmAlert = ()=>{
@@ -110,6 +188,7 @@ export default class Trigger extends Component{
     var cancelAlertButton = cancelAlert()
     return(
       <View style={{flex:0.9,flexDirection:'row', width:'100%'}}>
+        {this.renderProximity()}
         <Modal
         animationType="fade"
         transparent={true}
@@ -158,6 +237,10 @@ const styles = StyleSheet.create({
     rootalert:{
         borderRadius: 10,
     },
+    renderProximityViewText: {
+      flex:1,
+      backgroundColor: 'yellow'
+    },
     text: {
         textAlign: 'center',
         justifyContent: 'center',
@@ -186,6 +269,24 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    modalProxyView: {
+      flex:0.5,
+      margin: 10,
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+      borderColor: 'rgb(122, 184, 240)',
+      borderWidth: 1,
+  },
     modalButtons: {
       flex:1,
       margin: 20,
@@ -211,6 +312,24 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '700',
         fontSize: 20,
-
     },
+    modalProxyText: {
+      marginBottom: 5,
+      width: '100%',
+      textAlign: 'center',
+      fontWeight: '700',
+      fontSize: normalize(16),
+    },
+    renderProximityItemView: {
+      borderRadius: 5,
+      padding: 10,
+      marginTop: 20,
+      backgroundColor: 'rgb(122, 184, 240)',
+      alignItems: 'center',
+    },
+    renderProximityItemText: {
+      fontSize: 16,
+      fontFamily: 'sans-serif-medium',
+      color: 'black',
+    }
 });

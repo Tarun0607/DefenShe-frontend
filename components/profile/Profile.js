@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Card, Icon } from 'react-native-elements'
-import {Image, ImageBackground,TouchableHighlight, Platform, ScrollView, StyleSheet, Text, View, Dimensions, LogBox,Modal, TextInput, TouchableNativeFeedback } from 'react-native';
+import {Image, PixelRatio, ImageBackground,TouchableHighlight, Platform, ScrollView, StyleSheet, Text, View, Dimensions, LogBox,Modal, TextInput, TouchableNativeFeedback } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as Font from 'expo-font';
 import Email from './Email'
@@ -8,6 +8,22 @@ import Separator from './Separator'
 import Tel from './Tel'
 const windowWidth = Dimensions.get('window').width;
 import axios from 'axios';
+
+const {
+  width: SCREEN_WIDTH,
+  height: SCREEN_HEIGHT,
+} = Dimensions.get('window');
+
+const scale = SCREEN_WIDTH / 320;
+
+export function normalize(size) {
+  const newSize = size * scale 
+  if (Platform.OS === 'ios') {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize))
+  } else {
+    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+  }
+}
 const styles = StyleSheet.create({
   creditView: {
     marginTop: 20,
@@ -35,7 +51,7 @@ const styles = StyleSheet.create({
   creditScore: {
     flex: 0.5,
     textAlign: 'center',
-    fontSize: 50,
+    fontSize: normalize(42),
     fontFamily: 'LobsterTwo',
     color: 'black',
   },
@@ -43,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 0.5,
     textAlign: 'left',
-    fontSize: 20,
+    fontSize: normalize(16),
     fontFamily: 'sans-serif-medium',
     color: 'black',
   },
