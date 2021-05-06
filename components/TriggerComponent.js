@@ -18,7 +18,10 @@ export default class Trigger extends Component{
       },
       data: JSON.stringify({deviceID:this.props.deviceID, latitude:this.props.location.latitude, longitude: this.props.location.longitude}),
     };
-    axios(requestOptions);
+    axios(requestOptions)
+    .then((response)=>{
+      console.log(response.data);
+    })
   }
   confirmAlert = ()=>{
     this.setState({

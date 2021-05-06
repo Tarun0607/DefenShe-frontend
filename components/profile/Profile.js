@@ -260,7 +260,7 @@ class Profile extends Component {
       headers: {
         "Content-Type": "application/json",
       },
-      data: JSON.stringify({deviceID:this.state.deviceID, credit:0}),
+      data: JSON.stringify({deviceID:this.state.deviceID,name:this.state.name, credit:0}),
     };
     axios(requestOptions)
     this.setState({isUpdated: true});
