@@ -14,9 +14,14 @@ export default class RenderAnalytics extends Component{
   state = {
   }
   componentDidMount = async ()=>{
-  await AdMobInterstitial.setAdUnitID('ca-app-pub-9152673793842667/2666641658'); // Test ID, Replace with your-admob-unit-id
-  await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: false});
-  await AdMobInterstitial.showAdAsync();
+    try{
+      await AdMobInterstitial.setAdUnitID('ca-app-pub-9152673793842667/2666641658'); // Test ID, Replace with your-admob-unit-id
+      await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+      await AdMobInterstitial.showAdAsync();
+    }catch{
+
+    }
+      
   }
   render(){
     return(
