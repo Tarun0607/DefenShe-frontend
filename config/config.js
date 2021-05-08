@@ -73,7 +73,7 @@ const VCCredentials = {
 	ApiKey : "a64ca952-a369-4814-a2c1-974c55b8425a",
 	ApiHash : "f65b22291b9bced516cd09569ef29da0ab14fc5b5fce5ca39a6bec99c280686c",
 	data : JSON.stringify({
-		"username": "defenshe",
+		"username": "Defenshe",
 		"password": "Defenshe123"
 	})
 }

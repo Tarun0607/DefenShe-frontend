@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Card, Icon } from 'react-native-elements'
-import {Image, PixelRatio, ImageBackground,TouchableHighlight, Platform, ScrollView, StyleSheet, Text, View, Dimensions, LogBox,Modal, TextInput, TouchableNativeFeedback } from 'react-native';
+import {Image, ActivityIndicator, PixelRatio, ImageBackground,TouchableHighlight, Platform, ScrollView, StyleSheet, Text, View, Dimensions, LogBox,Modal, TextInput, TouchableNativeFeedback } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as Font from 'expo-font';
 import Email from './Email'
@@ -9,6 +9,7 @@ import Tel from './Tel'
 import {VCCredentials} from '../../config/config';
 import SvgQRCode from 'react-native-qrcode-svg';
 const windowWidth = Dimensions.get('window').width;
+import {themeStyle} from "../../config/config";
 import axios from 'axios';
 
 const {
@@ -251,7 +252,11 @@ class Profile extends Component {
     hasUnsignedVC: false,
     qrModal: false,
     unsignedVC: {},
-    QRValue: ""
+    QRValue: "",
+    signedCredential: {},
+    isSignedVC: false,
+    isVerified: false,
+    credentialValidity: false,
   }
   async loadFonts() {
     await Font.loadAsync({
@@ -326,14 +331,65 @@ class Profile extends Component {
       },
       data : body
     };
-    if(this.state.isAffinidiLogged===true){
+    if(this.state.isAffinidiLogged===true && this.state.isUpdated===true){
       axios(requestOptions)
       .then((response)=>{
-        this.setState({hasUnsignedVC: true, unsignedVC: response.data, QRValue: response.data.unsignedVC.holder.id});
+        this.setState({hasUnsignedVC: true, unsignedVC: response.data});
       })
       .catch((err)=>{
-        console.log("err")
+        console.log(err)
         this.setState({hasUnsignedVC: false});
+      })
+    }
+  }
+
+  generateSignedVC = async ()=>{
+    var body= {unsignedCredential: this.state.unsignedVC.unsignedVC};
+    var requestOptions = {
+      method: 'POST',
+      url: 'https://cloud-wallet-api.prod.affinity-project.org/api/v1/wallet/sign-credential',
+      headers: { 
+        'Api-Key': VCCredentials.ApiHash, 
+        'Authorization': 'Bearer '+this.state.accessToken,
+        'Content-Type': 'application/json'
+      },
+      data : body
+    };
+    if(this.state.isAffinidiLogged===true && this.state.isUpdated===true && this.state.hasUnsignedVC===true){
+      axios(requestOptions)
+      .then((response)=>{
+        this.setState({isSignedVC: true, signedCredential: response.data},()=>{
+          this.verifyVC();
+        });
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    }
+  }
+
+  verifyVC =()=>{
+    var body= {verifiableCredentials: this.state.signedCredential.signedCredential};
+    var requestOptions = {
+      method: 'POST',
+      url: 'https://affinity-verifier.prod.affinity-project.org/api/v1/verifier/verify-vcs',
+      headers: { 
+        'Api-Key': VCCredentials.ApiHash,
+        'Content-Type': 'application/json'
+      },
+      data : body
+    };
+    if(this.state.isAffinidiLogged===true && this.state.isUpdated===true && this.state.isSignedVC===true){
+      axios(requestOptions)
+      .then((response)=>{
+        this.setState({credentialValidity: response.data.isValid},()=>{
+          setTimeout(()=>{
+            this.setState({isVerified: true});
+            },2000);
+        })
+      })
+      .catch((err)=>{
+        console.log(err)
       })
     }
   }
@@ -366,6 +422,8 @@ class Profile extends Component {
       data: JSON.stringify({deviceID:this.state.deviceID,name:this.state.name, credit:0}),
     };
     axios(requestOptions)
+    .then(()=>{})
+    .catch(()=>{})
     this.setState({isUpdated: true});
     SecureStore.setItemAsync("isUpdated","true");
     SecureStore.setItemAsync("name",this.state.name);
@@ -431,6 +489,7 @@ class Profile extends Component {
             style={styles.creditFeedbackView}
             onPress={()=>{
               this.setState({qrModal: true});
+              this.generateSignedVC();
             }}>
               <View style={styles.creditTextView}>
                 <Text style={styles.creditScore}>{this.state.credit}</Text>
@@ -490,6 +549,45 @@ class Profile extends Component {
         <Text style={styles.verificationWarningText}>You need to verify your Identity to get monetized. </Text>
       </View>
     )
+  }
+
+  renderQRModal =()=>{
+    if(this.state.qrModal===true && this.state.isSignedVC===true && this.state.isVerified===true){
+      return(
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.qrModal}>
+          <View style={styles.centeredView}>
+            <View style={styles.QRModalView}>
+            <Text style={{fontSize: normalize(17), marginBottom: 8}}>Scan QR to verify VC</Text>
+            <SvgQRCode value={this.state.unsignedVC.unsignedVC.id?JSON.stringify([this.state.unsignedVC.unsignedVC.id,this.state.credentialValidity]):"null"} size={280}/>
+            <Icon
+              name="close"
+              color="white"
+              size={60}
+              iconStyle={{marginTop:20, backgroundColor: 'black', borderRadius: 30}}
+              onPress={()=>{this.setState({qrModal: false, isVerified: false, isSignedVC: false})}}/>
+            </View>
+          </View>
+        </Modal>
+      )
+    }else{
+      return(
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.qrModal && this.state.hasUnsignedVC}>
+          <View style={styles.centeredView}>
+            <View style={styles.QRModalView}>
+            <View style={themeStyle.spinnerHolder}>
+				      <ActivityIndicator color="#538ae4" size="large"/>
+			      </View>
+            </View>
+          </View>
+        </Modal>
+      )
+    }
   }
 
   render() {
@@ -568,24 +666,7 @@ class Profile extends Component {
               </View>
             </View>
           </Modal>
-          <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.qrModal}>
-            <View style={styles.centeredView}>
-              <View style={styles.QRModalView}>
-              <Text style={{fontSize: normalize(17), marginBottom: 8}}>Scan QR to verify VC</Text>
-              <SvgQRCode value={this.state.QRValue?this.state.QRValue:"null"} size={280}/>
-              <Icon
-                name="close"
-                color="white"
-                size={60}
-                iconStyle={{marginTop:20, backgroundColor: 'black', borderRadius: 30}}
-                onPress={()=>{this.setState({qrModal: false})}}
-              />
-              </View>
-            </View>
-          </Modal>
+          {this.renderQRModal()}
           <Card containerStyle={styles.cardContainer}>
             {this.renderHeader()}
             {this.renderTel()}
