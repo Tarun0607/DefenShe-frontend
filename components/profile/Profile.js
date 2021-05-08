@@ -305,7 +305,6 @@ class Profile extends Component {
   }
 
   generateUnsignedVC = async ()=>{
-    console.log("UVC");
     var body = {
       "type":"PhoneCredentialPersonV1",
       "data":{
@@ -570,13 +569,20 @@ class Profile extends Component {
             </View>
           </Modal>
           <Modal
-          animationType="fade"
+          animationType="slide"
           transparent={true}
           visible={this.state.qrModal}>
             <View style={styles.centeredView}>
               <View style={styles.QRModalView}>
               <Text style={{fontSize: normalize(17), marginBottom: 8}}>Scan QR to verify VC</Text>
               <SvgQRCode value={this.state.QRValue?this.state.QRValue:"null"} size={280}/>
+              <Icon
+                name="close"
+                color="white"
+                size={60}
+                iconStyle={{marginTop:20, backgroundColor: 'black', borderRadius: 30}}
+                onPress={()=>{this.setState({qrModal: false})}}
+              />
               </View>
             </View>
           </Modal>
