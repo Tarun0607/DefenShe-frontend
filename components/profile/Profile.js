@@ -6,6 +6,8 @@ import * as Font from 'expo-font';
 import Email from './Email'
 import Separator from './Separator'
 import Tel from './Tel'
+import {VCCredentials} from '../../config/config';
+import SvgQRCode from 'react-native-qrcode-svg';
 const windowWidth = Dimensions.get('window').width;
 import axios from 'axios';
 
@@ -173,6 +175,24 @@ const styles = StyleSheet.create({
       shadowRadius: 3.84,
       elevation: 5,
   },
+  QRModalView: {
+      height: Dimensions.get('window').height/2,
+      width: Dimensions.get('window').width/1.2,
+      alignSelf: 'center',
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+  },
   modalScroll: {
     flex:1,
   },
@@ -224,7 +244,14 @@ class Profile extends Component {
     isUpdated: false,
     deviceID: "",
     credit: 0,
-    creditConnected: false
+    creditConnected: false,
+    accessToken: "",
+    did: "",
+    isAffinidiLogged: false,
+    hasUnsignedVC: false,
+    qrModal: false,
+    unsignedVC: {},
+    QRValue: ""
   }
   async loadFonts() {
     await Font.loadAsync({
@@ -232,6 +259,29 @@ class Profile extends Component {
     });
     this.setState({ fontsLoaded: true });
   }
+
+  AffinidiAccessTokenGenerator = async ()=>{
+    var requestOptions = {
+      method: 'POST',
+      url: "https://cloud-wallet-api.prod.affinity-project.org/api/v1/users/login",
+      headers: {
+        "Content-Type": "application/json",
+        "Api-Key": VCCredentials.ApiHash,
+      },
+      data: VCCredentials.data
+    };
+    axios(requestOptions)
+    .then((response)=>{
+      this.setState(response.data);
+      this.setState({isAffinidiLogged: true},()=>{
+        this.generateUnsignedVC();
+      });
+    })
+    .catch((err)=>{
+      this.setState({isAffinidiLogged: false});
+    })
+  }
+
   fetchCredits= async ()=>{
     const deviceID = await SecureStore.getItemAsync("deviceID");
     this.setState({deviceID},()=>{
@@ -253,6 +303,42 @@ class Profile extends Component {
       })
     });
   }
+
+  generateUnsignedVC = async ()=>{
+    console.log("UVC");
+    var body = {
+      "type":"PhoneCredentialPersonV1",
+      "data":{
+          "@type":["Person", "PersonE", "PhonePerson"],
+          "deviceID": this.state.deviceID,
+          "name": this.state.name,
+          "credit": this.state.credit,
+          "email": this.state.email,
+          "mobile": this.state.mobile
+          },
+      "holderDid":this.state.did,
+    }
+    var requestOptions = {
+      method: 'POST',
+      url: 'https://affinity-issuer.prod.affinity-project.org/api/v1/vc/build-unsigned',
+      headers: { 
+        'Api-Key': VCCredentials.ApiHash, 
+        'Content-Type': 'application/json'
+      },
+      data : body
+    };
+    if(this.state.isAffinidiLogged===true){
+      axios(requestOptions)
+      .then((response)=>{
+        this.setState({hasUnsignedVC: true, unsignedVC: response.data, QRValue: response.data.unsignedVC.holder.id});
+      })
+      .catch((err)=>{
+        console.log("err")
+        this.setState({hasUnsignedVC: false});
+      })
+    }
+  }
+
   componentDidMount = async ()=>{
     await this.loadFonts();
     let result = await SecureStore.getItemAsync("isUpdated");
@@ -268,8 +354,10 @@ class Profile extends Component {
       this.setState({name, email, mobile, address, city, country, zipcode});
     }
     this.fetchCredits();
+    await this.AffinidiAccessTokenGenerator();
   }
-  submitForm(){
+
+  submitForm= async ()=>{
     var requestOptions = {
       method: 'POST',
       url: "https://defenshe.azurewebsites.net/credit/",
@@ -288,6 +376,7 @@ class Profile extends Component {
     SecureStore.setItemAsync("city",this.state.city);
     SecureStore.setItemAsync("country",this.state.country);
     SecureStore.setItemAsync("zipcode",this.state.zipcode);
+    await this.generateUnsignedVC();
   }
   renderHeader = () => {
     const {
@@ -339,7 +428,11 @@ class Profile extends Component {
       return(
         <View style={styles.creditView}>
           <View style={styles.creditPlate}>
-            <TouchableNativeFeedback style={styles.creditFeedbackView}>
+            <TouchableNativeFeedback 
+            style={styles.creditFeedbackView}
+            onPress={()=>{
+              this.setState({qrModal: true});
+            }}>
               <View style={styles.creditTextView}>
                 <Text style={styles.creditScore}>{this.state.credit}</Text>
                 <Text style={styles.creditLabel}>DEFENSHE CREDITS</Text>
@@ -473,6 +566,17 @@ class Profile extends Component {
                   </TouchableHighlight>
                   </View>
                 </ScrollView>
+              </View>
+            </View>
+          </Modal>
+          <Modal
+          animationType="fade"
+          transparent={true}
+          visible={this.state.qrModal}>
+            <View style={styles.centeredView}>
+              <View style={styles.QRModalView}>
+              <Text style={{fontSize: normalize(17), marginBottom: 8}}>Scan QR to verify VC</Text>
+              <SvgQRCode value={this.state.QRValue?this.state.QRValue:"null"} size={280}/>
               </View>
             </View>
           </Modal>
